@@ -12,3 +12,8 @@ jobs:
         run: |
               npm ci
               npm run lint
+      - name: Backend lint check
+        working-directory: ./backend
+        run: |
+              npm ci
+              npm run lint
