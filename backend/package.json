@@ -1,0 +1,50 @@
+{
+  "type": "module",
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.5"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "sourceType": "module"
+    },
+    "extends": [
+      "eslint:recommended",
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": "error"
+    },
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "rules" : {
+      "semi": ["error", "always"],
+      "quotes": ["error", "single"],
+      "no-console": "off",
+      "object-curly-spacing": ["error", "always"],
+      "no-unused-vars": "error",
+      "indent": ["error", 2],
+      "linebreak-style": ["error", "unix"],
+      "no-trailing-spaces": "error",
+      "comma-dangle": ["error", "always-multiline"]
+    }
+  }
+}
