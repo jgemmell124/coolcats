@@ -19,6 +19,6 @@ const userSchema = new mongoose.Schema({
     enum: ROLES_ENUM.ALL,
     default: ROLES_ENUM.USER,
   },
-});
+}, { collection: 'users' });
 
 export default mongoose.model('User', userSchema);
