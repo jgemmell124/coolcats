@@ -3,7 +3,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
@@ -25,7 +25,8 @@
   },
   "eslintConfig": {
     "parserOptions": {
-      "sourceType": "module"
+      "sourceType": "module",
+      "ecmaVersion": "latest"
     },
     "extends": [
       "eslint:recommended",
@@ -54,11 +55,7 @@
         "error",
         "unix"
       ],
-      "no-trailing-spaces": "error",
-      "comma-dangle": [
-        "error",
-        "always-multiline"
-      ]
+      "no-trailing-spaces": "error"
     },
     "env": {
       "node": true,
