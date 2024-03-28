@@ -1,4 +1,4 @@
-import sandwichModel from '../models/sandwichModel';
+import sandwichModel from '../models/sandwichModel.js';
 
 export const getUserById = (sandwichId) => {
   return sandwichModel.findById(sandwichId);
