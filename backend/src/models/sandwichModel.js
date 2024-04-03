@@ -5,6 +5,6 @@ const sandwichSchema = new mongoose.Schema({
   ingredients: { type: Array, required: true },
   price: { type: Number, required: true },
   description: { type: String, required: true },
-}, { collection: 'sandwiches' });
+}, { collection: 'sandwiches', versionKey: false });
 
 export default mongoose.model('Sandwich', sandwichSchema);

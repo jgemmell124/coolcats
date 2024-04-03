@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { ROLES_ENUM } from '../utils/constants';
+import { ROLES_ENUM } from '../utils/constants.js';
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -19,6 +19,6 @@ const userSchema = new mongoose.Schema({
     enum: ROLES_ENUM.ALL,
     default: ROLES_ENUM.USER,
   },
-}, { collection: 'users' });
+}, { collection: 'users', versionKey: false });
 
 export default mongoose.model('User', userSchema);
