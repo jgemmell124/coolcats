@@ -30,6 +30,7 @@ const ratingSchema = new mongoose.Schema(
       createdAt: 'created',
       updatedAt: 'lastEdited',
     },
+    versionKey: false,
   }
 );
 

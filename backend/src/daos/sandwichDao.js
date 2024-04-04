@@ -1,10 +1,10 @@
 import sandwichModel from '../models/sandwichModel.js';
 
-export const getUserById = (sandwichId) => {
+export const getSandwichById = (sandwichId) => {
   return sandwichModel.findById(sandwichId);
 };
 
-export const createUser = (sandwich) => {
+export const createSandwich = (sandwich) => {
   return sandwichModel.create(sandwich);
 };
 
@@ -14,4 +14,8 @@ export const updateSandwich = (sandwichId, sandwich) => {
 
 export const deleteSandwich = (sandwichId) => {
   return sandwichModel.deleteOne({ _id: sandwichId });
+};
+
+export const getAllSandwiches = () => {
+  return sandwichModel.find({});
 };
