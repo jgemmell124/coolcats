@@ -162,7 +162,7 @@ router.put('/:username', async (req, res) => {
       }
     }
     const updatedUser = await userDao.updateUser(username, updateParams);
-    return res.json(updatedUser).status(200);
+    return res.json(updatedUser).status(201);
   } catch (err) {
     console.log(err);
     return res.status(400).send('Failed to update user');
@@ -175,7 +175,6 @@ router.delete('/:username', async (req, res) => {
   const { username } = req.params;
   const userSession = getUserSession(req);
 
-  // adm
   if (!userSession || (userSession.username !== username && userSession.role !== ROLES_ENUM.ADMIN)) {
     return res.status(403).send('Unauthorized');
   }
@@ -185,7 +184,7 @@ router.delete('/:username', async (req, res) => {
     if (userSession.username === username) {
       req.session.destroy();
     }
-    return res.sendStatus(204);
+    return res.status(204).send('User deleted');
   } catch (err) {
     console.log(err);
     return res.status(400).send('Failed to delete user');

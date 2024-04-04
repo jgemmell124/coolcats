@@ -7,6 +7,7 @@ const ratingSchema = new mongoose.Schema(
       ref: 'Sandwich',
       required: true,
     },
+    // TODO either username or user_id or both?
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
