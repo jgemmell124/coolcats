@@ -10,10 +10,10 @@ const Navigation = ({ children }) => {
       <NavBar />
       <div className='container-fluid h-100'>
         <div className='row h-100'>
-          <div className='col-2' id='green'>
+          <div className='col-2' id='green' style={{ maxWidth: '150px' }}>
             <SideBar />
           </div>
-          <div className='col-10' style={{ textAlign: 'justify', backgroundColor: 'grey' }}>
+          <div className='col' style={{ textAlign: 'justify', backgroundColor: 'grey' }}>
             {children}
           </div>
         </div>

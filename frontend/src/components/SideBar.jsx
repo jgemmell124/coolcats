@@ -16,7 +16,6 @@ const SideBar = () => {
       <a href='#'>Link 4</a>
       <br/>
       <br/>
-
     </>
   );
 };
