@@ -1,19 +1,35 @@
 import axios from 'axios';
 
+
+const createRequest = (req) => {
+  return new Promise((resolve, reject) => {
+    req
+      .then((response) => {
+        if (response.status >= 400) {
+          reject(response);
+        }
+        resolve(response.data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
 const withCredentials = { withCredentials: true };
 
 export const authGet = (url) => {
-  return axios.get(url, withCredentials);
+  return createRequest(axios.get(url, withCredentials));
 };
 
 export const authPost = (url, body) => {
-  return axios.post(url, body, withCredentials);
+  return createRequest(axios.post(url, body, withCredentials));
 };
 
 export const authPut = (url, body) => {
-  return axios.put(url, body, withCredentials);
+  return createRequest(axios.put(url, body, withCredentials));
 };
 
 export const authDelete = (url) => {
-  return axios.delete(url, withCredentials);
+  return createRequest(axios.delete(url, withCredentials));
 };

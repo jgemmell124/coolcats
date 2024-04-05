@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { getAllSandwiches } from '../apis/Sandwiches';
+// eslint-disable-next-line no-unused-vars
 import { getAllUsers, getUser } from '../apis/Users';
 
 const HomePage = () => {
@@ -7,8 +9,12 @@ const HomePage = () => {
 
   useEffect(() => {
     getAllUsers()
-      .then(setUsers)
-      .catch(console.log);
+      .then((res) => setUsers(res.users))
+      .catch();
+
+    getAllSandwiches()
+      .then((res) => setSandwiches(res.sandwiches))
+      .catch();
   }, []);
 
   return (
@@ -19,6 +25,13 @@ const HomePage = () => {
         <div key={user._id}>
           <h2>{user.username}</h2>
           <p>{user._id}</p>
+        </div>
+      ))}
+      {sandwiches.map((s) => (
+        <div key={s._id}>
+          <h2>{s.name}</h2>
+          <p>{s.price}</p>
+          <p>{s.description}</p>
         </div>
       ))}
     </div>
