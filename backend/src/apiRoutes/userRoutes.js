@@ -184,7 +184,7 @@ router.delete('/:username', async (req, res) => {
     if (userSession.username === username) {
       req.session.destroy();
     }
-    return res.status(204).send('User deleted');
+    return res.status(202).send('User deleted');
   } catch (err) {
     console.log(err);
     return res.status(400).send('Failed to delete user');
@@ -200,7 +200,7 @@ router.post('/login', async (req, res) => {
   try {
     const user = await userDao.findUserByCredentials(username, password);
     if (!user) {
-      return res.status(400).send('User Not Found');
+      return res.status(400).send('Username or password is incorrect');
     }
     // save the session
     const userSessionInfo = setUserSession(req, user);

@@ -5,9 +5,6 @@ const createRequest = (req) => {
   return new Promise((resolve, reject) => {
     req
       .then((response) => {
-        if (response.status >= 400) {
-          reject(response);
-        }
         resolve(response.data);
       })
       .catch((error) => {

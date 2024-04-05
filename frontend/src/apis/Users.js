@@ -23,3 +23,11 @@ export const updateUser = (username, updateParams) => {
 export const createUser = (user) => {
   return authPost(USERS_URL, user);
 };
+
+export const login = (username, password) => {
+  return authPost(`${USERS_URL}/login`, { username, password });
+};
+
+export const logout = () => {
+  return authPost(`${USERS_URL}/logout`);
+};

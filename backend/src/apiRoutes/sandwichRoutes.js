@@ -99,7 +99,7 @@ router.delete('/:id', async (req, res) => {
 
   try {
     await sandwichDao.deleteSandwich(id);
-    return res.sendStatus(204);
+    return res.status(202).send('Sandwich deleted');
   } catch (err) {
     console.log(err);
     return res.status(400).send('Failed to delete sandwich');

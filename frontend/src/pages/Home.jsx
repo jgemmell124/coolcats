@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAllSandwiches } from '../apis/Sandwiches';
-// eslint-disable-next-line no-unused-vars
-import { getAllUsers, getUser } from '../apis/Users';
+import { getAllUsers } from '../apis/Users';
 
 const HomePage = () => {
   const [users, setUsers] = useState([]);
