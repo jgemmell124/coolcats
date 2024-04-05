@@ -21,6 +21,9 @@ if (process.env.NODE_ENV === 'development') {
 
 const app = express();
 
+// middleware
+
+
 app.use(
   cors({
     origin: FRONTEND_URL,
@@ -42,9 +45,26 @@ if (process.env.NODE_ENV !== 'development') {
     secure: true,
   };
 }
-// middleware
+
 app.use(session(sessionOptions));
 app.use(express.json());
+
+// log requests
+app.use((req, _res, next) => {
+  console.info(`[${new Date().toISOString()}] ${req.method} ${req.path} USER: ${req.session['user']?._id} BODY: ${JSON.stringify(req.body)}`);
+  next();
+});
+
+// log responses
+app.use((req, res, next) => {
+  const oldSend = res.send;
+  res.send = function (data) {
+    console.info(`[${new Date().toISOString()}] Response: ${req.method} ${req.originalUrl} DATA: ${data}`);
+    res.send = oldSend;
+    return res.send(data);
+  };
+  next();
+});
 
 // routes
 app.use('/api', apiRoutes);
