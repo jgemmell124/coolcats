@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Navbar = ({ children }) => {
+const Navigation = ({ children }) => {
 
   return (
     <div style={{ overflow: 'hidden', height: '100vh' }}>
@@ -16,8 +16,7 @@ const Navbar = ({ children }) => {
         </button>
         <div className='collapse navbar-collapse' id='navbarNavAltMarkup'>
           <div className='navbar-nav'>
-            <a className='nav-item nav-link
-              active' href='#'>
+            <a className='nav-item nav-link active' href='#'>
               Home
             </a>
             <a className='nav-item nav-link' href='#'>Features</a>
@@ -52,9 +51,9 @@ const Navbar = ({ children }) => {
   );
 };
 
-Navbar.propTypes = {
+Navigation.propTypes = {
   children: PropTypes.node,
 };
 
 
-export default Navbar;
+export default Navigation;
