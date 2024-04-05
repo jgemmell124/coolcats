@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { getAllUsers, getUser } from '../apis/Users';
-import Navigation from '../components/Navbar';
 
 const HomePage = () => {
   const [users, setUsers] = useState([]);
