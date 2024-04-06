@@ -1,26 +1,29 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { loginUser } from '../auth/authSlice';
 import { login } from '../apis/Users';
-
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogin = async () => {
     try {
       setError(null);
-      await login(username, password);
-      navigate('/');
+      const user = await login(username, password);
+      dispatch(loginUser(user));
+      navigate('/', { replace: true });
     } catch (err) {
       setError(err?.response?.data ?? err.message);
     }
   };
-
 
   return (
     <div className='vh-100 secondary' style={{ backgroundColor: '#696969' }}>

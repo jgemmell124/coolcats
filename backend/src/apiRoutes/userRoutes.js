@@ -37,7 +37,7 @@ router.get('/', async (req, res) => {
 
   const filter = role ? { role } : {};
 
-  if (!session || session.role === ROLES_ENUM.USER) {
+  if (!session?.role || session.role === ROLES_ENUM.USER) {
     // TODO should users be able to see employees?
     filter.role = ROLES_ENUM.USER;
     Object.assign(baseProjection, { name: 0, email: 0, role: 0 });
@@ -47,6 +47,7 @@ router.get('/', async (req, res) => {
     };
     Object.assign(baseProjection, { name: 0, email: 0 });
   } else if (session.role !== ROLES_ENUM.ADMIN) {
+    console.log('session', session);
     // invalid role
     return res.status(403).send('Unauthorized');
   }
@@ -104,6 +105,23 @@ router.post('/', async (req, res) => {
     console.log(err);
     return res.status(400).send('Failed to create user');
   };
+});
+
+router.get('/profile', async (req, res) => {
+  const userSession = getUserSession(req);
+  if (!userSession?._id) {
+    return res.status(401).send('Unauthorized');
+  }
+  try {
+    const user = await userDao.getUserById(userSession._id);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    return res.json(setUserSession(req, user)).status(200);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send('Failed to get user');
+  }
 });
 
 router.get('/:username', async (req, res) => {
@@ -190,6 +208,7 @@ router.delete('/:username', async (req, res) => {
     return res.status(400).send('Failed to delete user');
   }
 });
+
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;

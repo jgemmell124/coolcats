@@ -9,7 +9,7 @@ const HomePage = () => {
   useEffect(() => {
     getAllUsers()
       .then((res) => setUsers(res.users))
-      .catch();
+      .catch((res) => Error);
 
     getAllSandwiches()
       .then((res) => setSandwiches(res.sandwiches))

@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 const NavBar = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const title = 'Navbar title';
-  const isSignedIn = true;
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const links = [
     { title: 'Home', url: '#' },
     { title: 'Sandwiches', url: '#' },
-    ...(isSignedIn ? 
+    ...(isAuthenticated ? 
       [
         { title: 'Profile', url: '#' },
         { title: 'Sign Out', url: '#' },
       ] :
-      [{ title: 'Sign In', url: '#' }]
+      [{ title: 'Sign In', url: '/login' }]
     ),
   ];
 
@@ -57,7 +59,7 @@ const NavBar = () => {
         <ul className='navbar-nav mr-auto'>
           {links.map((link, index) => (
             <li className='nav-item' key={index}>
-              <a className='nav-link' href={link.url}>{link.title}</a>
+              <Link className='nav-link' to={link.url}>{link.title}</Link>
             </li>
           ))}
         </ul>
