@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { login } from '../apis/Users';
 
@@ -78,7 +78,7 @@ const LoginPage = () => {
 
                 <hr className='my-4'/>
 
-                <p>{'Don\'t have an account?'} <a >Sign Up Here</a></p>
+                <p>{'Don\'t have an account?'} <Link to={'/signup'} >Create one here</Link></p>
 
               </div>
             </div>
