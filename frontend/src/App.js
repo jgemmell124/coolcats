@@ -8,7 +8,7 @@ import LoginPage from './pages/LoginPage';
 import { UserContext } from './auth/userContext';
 
 function App() {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+
   return (
     <UserContext>
       <BrowserRouter>
