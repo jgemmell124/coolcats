@@ -1,12 +1,9 @@
 import express from 'express';
 import { ROLES_ENUM  } from '../utils/constants.js';
 import * as sandwichDao from '../daos/sandwichDao.js';
+import { getUserSession } from '../utils/session.js';
 
 const router = express.Router();
-
-const getUserSession = (req) => {
-  return req.session['user'];
-};
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;

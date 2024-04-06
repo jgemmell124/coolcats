@@ -1,5 +1,3 @@
-// populate the database
-//
 import * as sandwichDao from '../daos/sandwichDao.js';
 import * as userDao from '../daos/userDao.js';
 import * as ratingDao from '../daos/ratingDao.js';

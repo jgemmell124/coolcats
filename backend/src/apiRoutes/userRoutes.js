@@ -2,25 +2,9 @@ import express from 'express';
 import userModel from '../models/userModel.js';
 import { ROLES_ENUM  } from '../utils/constants.js';
 import * as userDao from '../daos/userDao.js';
+import { getUserSession } from '../utils/session.js';
 
 const router = express.Router();
-
-const getUserSession = (req) => {
-  return req.session['user'];
-};
-
-const setUserSession = (req, user) => {
-  const userSessionInfo = {
-    username: user.username,
-    role: user.role,
-    name: user.name,
-    email: user.email,
-    _id: user._id,
-  };
-  req.session['user'] = userSessionInfo;
-
-  return userSessionInfo;
-};
 
 router.get('/', async (req, res) => {
   // admin can see all users

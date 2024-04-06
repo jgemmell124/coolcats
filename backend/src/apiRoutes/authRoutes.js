@@ -1,23 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import * as userDao from '../daos/userDao.js';
-
-const getUserSession = (req) => {
-  return req.session['user'];
-};
-
-const setUserSession = (req, user) => {
-  const userSessionInfo = {
-    username: user.username,
-    role: user.role,
-    name: user.name,
-    email: user.email,
-    _id: user._id,
-  };
-  req.session['user'] = userSessionInfo;
-
-  return userSessionInfo;
-};
+import { getUserSession, setUserSession } from '../utils/session.js';
 
 router.get('/session', async (req, res) => {
   const userSession = getUserSession(req);
