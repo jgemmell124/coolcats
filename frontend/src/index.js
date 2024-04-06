@@ -6,16 +6,13 @@ import reportWebVitals from './reportWebVitals';
 import './scss/custom.scss';
 import { Provider } from 'react-redux';
 import authStore from './auth/store';
-import { CookiesProvider } from 'react-cookie';
 /* import 'bootstrap/dist/css/bootstrap.min.css'; */
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={authStore}>
-      <CookiesProvider defaultSetOptions={{ path: '/' }}>
-        <App />
-      </CookiesProvider>
+      <App />
     </Provider>
   </React.StrictMode>
 );

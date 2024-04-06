@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { getProfile } from '../apis/Users';
+import { getSession } from '../apis/Auth';
 import { loginUser, logoutUser } from './authSlice';
 import { useDispatch } from 'react-redux';
 
-export const AuthProvider = ({ children }) => {
+export const UserContext = ({ children }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getProfile()
+    getSession()
       .then(user => dispatch(loginUser(user)))
       .catch(() => dispatch(logoutUser())); 
   }, []);
@@ -16,6 +16,6 @@ export const AuthProvider = ({ children }) => {
   return children;
 };
 
-AuthProvider.propTypes = {
+UserContext.propTypes = {
   children: PropTypes.node.isRequired,
 };

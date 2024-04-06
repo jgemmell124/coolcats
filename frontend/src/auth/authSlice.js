@@ -1,4 +1,3 @@
-// authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -15,7 +14,6 @@ const authSlice = createSlice({
       state.user = action.payload;
     },
     logoutUser(state) {
-      sessionStorage.removeItem('coolcats.sid');
       state.isAuthenticated = false;
       state.user = null;
     }

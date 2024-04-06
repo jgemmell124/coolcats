@@ -5,13 +5,13 @@ import HomePage from './pages/Home';
 import NotFound from './pages/NotFound';
 import Navigation from './components/Navigation';
 import LoginPage from './pages/LoginPage';
-import { AuthProvider } from './auth/authProvider';
+import { UserContext } from './auth/userContext';
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   return (
-    <BrowserRouter>
-      <AuthProvider>
+    <UserContext>
+      <BrowserRouter>
         <Routes>
           <Route element={<AnonymousRoute />}>
             {/* These routes only available to those NOT logged in */}
@@ -20,8 +20,8 @@ function App() {
           </Route>
           <Route path='*' element={<MainContent />} />
         </Routes>
-      </AuthProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </UserContext>
   );
 }
 
@@ -39,7 +39,6 @@ const MainContent = () => {
 
 const AnonymousRoute = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
-  console.log('isAuthenticated', isAuthenticated);
   return isAuthenticated ? <Navigate to='/' replace /> : <Outlet />;
 };
 

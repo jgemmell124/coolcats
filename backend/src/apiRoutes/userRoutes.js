@@ -107,23 +107,6 @@ router.post('/', async (req, res) => {
   };
 });
 
-router.get('/profile', async (req, res) => {
-  const userSession = getUserSession(req);
-  if (!userSession?._id) {
-    return res.status(401).send('Unauthorized');
-  }
-  try {
-    const user = await userDao.getUserById(userSession._id);
-    if (!user) {
-      return res.status(404).send('User not found');
-    }
-    return res.json(setUserSession(req, user)).status(200);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send('Failed to get user');
-  }
-});
-
 router.get('/:username', async (req, res) => {
   // admin can see all user info
   // user can see their own info
@@ -208,40 +191,5 @@ router.delete('/:username', async (req, res) => {
     return res.status(400).send('Failed to delete user');
   }
 });
-
-
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    return res.status(400).send('Username and Password Required');
-  }
-
-  try {
-    const user = await userDao.findUserByCredentials(username, password);
-    if (!user) {
-      return res.status(400).send('Username or password is incorrect');
-    }
-    // save the session
-    const userSessionInfo = setUserSession(req, user);
-
-    return res.json(userSessionInfo).status(200);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send('Could not log in');
-  }
-});
-
-
-router.post('/logout', (req, res) => {
-  req.session?.destroy((err) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send('Failed to log out');
-    } else {
-      return res.sendStatus(204);
-    }
-  });
-});
-
 
 export default router;

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../auth/authSlice';
-import { login } from '../apis/Users';
+import { login } from '../apis/Auth';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
