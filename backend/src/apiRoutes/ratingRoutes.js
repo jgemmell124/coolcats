@@ -4,12 +4,9 @@ import * as sandwichDao from '../daos/sandwichDao.js';
 import * as userModel from '../models/userModel.js';
 import * as ratingDao from '../daos/ratingDao.js';
 import ratingModel from '../models/ratingModel.js';
+import { getUserSession } from '../utils/session.js';
 
 const router = express.Router();
-
-const getUserSession = (req) => {
-  return req.session['user'];
-};
 
 router.get('/', async (req, res) => {
   const { sandwichId, userId } = req.query;

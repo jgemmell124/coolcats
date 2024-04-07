@@ -2,25 +2,9 @@ import express from 'express';
 import userModel from '../models/userModel.js';
 import { ROLES_ENUM  } from '../utils/constants.js';
 import * as userDao from '../daos/userDao.js';
+import { getUserSession } from '../utils/session.js';
 
 const router = express.Router();
-
-const getUserSession = (req) => {
-  return req.session['user'];
-};
-
-const setUserSession = (req, user) => {
-  const userSessionInfo = {
-    username: user.username,
-    role: user.role,
-    name: user.name,
-    email: user.email,
-    _id: user._id,
-  };
-  req.session['user'] = userSessionInfo;
-
-  return userSessionInfo;
-};
 
 router.get('/', async (req, res) => {
   // admin can see all users
@@ -37,7 +21,7 @@ router.get('/', async (req, res) => {
 
   const filter = role ? { role } : {};
 
-  if (!session || session.role === ROLES_ENUM.USER) {
+  if (!session?.role || session.role === ROLES_ENUM.USER) {
     // TODO should users be able to see employees?
     filter.role = ROLES_ENUM.USER;
     Object.assign(baseProjection, { name: 0, email: 0, role: 0 });
@@ -47,6 +31,7 @@ router.get('/', async (req, res) => {
     };
     Object.assign(baseProjection, { name: 0, email: 0 });
   } else if (session.role !== ROLES_ENUM.ADMIN) {
+    console.log('session', session);
     // invalid role
     return res.status(403).send('Unauthorized');
   }
@@ -190,39 +175,5 @@ router.delete('/:username', async (req, res) => {
     return res.status(400).send('Failed to delete user');
   }
 });
-
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    return res.status(400).send('Username and Password Required');
-  }
-
-  try {
-    const user = await userDao.findUserByCredentials(username, password);
-    if (!user) {
-      return res.status(400).send('Username or password is incorrect');
-    }
-    // save the session
-    const userSessionInfo = setUserSession(req, user);
-
-    return res.json(userSessionInfo).status(200);
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send('Could not log in');
-  }
-});
-
-
-router.post('/logout', (req, res) => {
-  req.session?.destroy((err) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send('Failed to log out');
-    } else {
-      return res.sendStatus(204);
-    }
-  });
-});
-
 
 export default router;

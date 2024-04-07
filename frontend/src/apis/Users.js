@@ -8,7 +8,7 @@ export const getUser = (username) => {
   return authGet(`${USERS_URL}/${username}`);
 };
 
-export const getAllUsers = (params={}) => {
+export const getAllUsers = (params=null) => {
   return authGet(USERS_URL + (params ? `?${new URLSearchParams(params)}` : ''));
 };
 
@@ -22,12 +22,4 @@ export const updateUser = (username, updateParams) => {
 
 export const createUser = (user) => {
   return authPost(USERS_URL, user);
-};
-
-export const login = (username, password) => {
-  return authPost(`${USERS_URL}/login`, { username, password });
-};
-
-export const logout = () => {
-  return authPost(`${USERS_URL}/logout`);
 };
