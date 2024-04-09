@@ -1,5 +1,6 @@
 {
   "env": {
+    "node": true,
     "browser": true,
     "es2021": true
   },
@@ -18,6 +19,9 @@
     "indent": [
       "error",
       2
+    ],
+    "no-unused-vars": [
+      "warn"
     ],
     "linebreak-style": [
       "error",
