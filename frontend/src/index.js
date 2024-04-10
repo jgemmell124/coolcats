@@ -6,6 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import './scss/custom.scss';
 import { Provider } from 'react-redux';
 import authStore from './auth/store';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+/* import '../node_modules/bootstrap/dist/js/bootstrap'; */
 /* import 'bootstrap/dist/css/bootstrap.min.css'; */
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
