@@ -1,27 +1,65 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { logout } from '../apis/Auth';
+import { logoutUser } from '../auth/authSlice';
+import Alert from './Alert';
 
 const NavBar = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [alert, setAlert] = useState(null);
   const title = 'Navbar title';
   const { isAuthenticated } = useSelector((state) => state.auth);
-
-  const links = [
-    { title: 'Home', url: '#' },
-    { title: 'Sandwiches', url: '#' },
-    ...(isAuthenticated ? 
-      [
-        { title: 'Profile', url: '#' },
-        { title: 'Sign Out', url: '#' },
-      ] :
-      [{ title: 'Sign In', url: '/login' }]
-    ),
-  ];
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSearch = (event) => {
     event.preventDefault();
   };
+
+  const handleSignout = async () => {
+    try {
+      await logout();
+      dispatch(logoutUser());
+      if (window.location.pathname === '/profile') {
+        navigate('/', { replace: true });
+      }
+    } catch (err) {
+      setAlert('Failed to sign out');
+    }
+  };
+
+  // dropdown to show profile and signout button
+  const accountDropdown = (
+    <li 
+      className='nav-item dropdown'>
+      <button 
+        className='nav-link dropdown-toggle'
+        id='dropdownMenuButton' 
+        data-bs-toggle='dropdown' 
+        aria-haspopup='true' 
+        aria-expanded='false'
+        type='button'
+      >
+        Account
+      </button>
+      <ul 
+        className='dropdown-menu dropdown-menu-end' 
+        aria-labelledby='dropdownMenuButton'>
+        <li>
+          <a className='dropdown-item d-flex' to='/profile'>Profile</a>
+        </li>
+        <li>
+          <button 
+            className='dropdown-item'
+            onClick={handleSignout}
+          >
+            Sign Out
+          </button>
+        </li>
+      </ul>
+    </li>
+  );
 
   return (
     <nav className='navbar navbar-expand-md navbar-dark bg-dark justify-contnent-between'>
@@ -56,14 +94,25 @@ const NavBar = () => {
             </button>
           </div>
         </form>
-        <ul className='navbar-nav mr-auto'>
-          {links.map((link, index) => (
-            <li className='nav-item' key={index}>
-              <Link className='nav-link' to={link.url}>{link.title}</Link>
+        <ul 
+          style={{ marginRight: '15px' }}
+          className='navbar-nav'>
+          <li className='nav-item'>
+            <Link className='nav-link' to={'/'}>Home</Link>
+          </li>
+          <li className='nav-item'>
+            <Link className='nav-link' to={'/'}>Sandwiches</Link>
+          </li>
+          {isAuthenticated ? 
+            accountDropdown 
+            : 
+            <li className='nav-item'>
+              <Link className='nav-link' to={'/login'}>Sign In</Link>
             </li>
-          ))}
+          }
         </ul>
       </div>
+      <Alert alert={alert} setAlert={setAlert} />
     </nav>
   );
 
