@@ -6,7 +6,7 @@ import { getUserSession, setUserSession } from '../utils/session.js';
 router.get('/session', async (req, res) => {
   const userSession = getUserSession(req);
   if (!userSession?._id) {
-    return res.status(301).send('Unauthorized');
+    return res.status(404).send('Session not found');
   }
   try {
     const user = await userDao.getUserById(userSession._id);

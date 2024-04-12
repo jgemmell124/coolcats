@@ -2,7 +2,7 @@ import express from 'express';
 import userModel from '../models/userModel.js';
 import { ROLES_ENUM } from '../utils/constants.js';
 import * as userDao from '../daos/userDao.js';
-import { getUserSession } from '../utils/session.js';
+import { getUserSession, setUserSession } from '../utils/session.js';
 
 const router = express.Router();
 
@@ -105,19 +105,19 @@ router.get('/:username', async (req, res) => {
     }
 
     const userInfo = user.toObject();
+    delete userInfo?.password;
     const userSession = getUserSession(req);
 
-    if (userSession?.role === ROLES_ENUM.ADMIN) {
+    if (userSession?.role === ROLES_ENUM.ADMIN || userSession?.username === username) {
       // admin can see all user info
-      return res.json(userSession).status(200);
-    } else if (userSession?.username === username) {
       // user can see their own info
+      // return info without password
       return res.json(userInfo).status(200);
     } else {
       // other users can only see username and _id
       return res
-        .json({ username: userInfo.username, _id: userInfo._id })
-        .status(200);
+        .status(200)
+        .json({ username: userInfo.username, _id: userInfo._id, name: userInfo.name });
     }
   } catch (err) {
     console.log(err);
@@ -149,8 +149,19 @@ router.put('/:username', async (req, res) => {
         updateParams.role = role;
       }
     }
-    const updatedUser = await userDao.updateUser(username, updateParams);
-    return res.json(updatedUser).status(201);
+    await userDao.updateUser(username, updateParams);
+    const updatedUser = await userDao.getUserByUsername(updateParams.username ?? username);
+
+    // if the user is updating their own account, update the session
+    if (userSession.username === username) {
+      const userInfo = setUserSession(req, updatedUser);
+      return res.json(userInfo).status(200);
+    } else {
+      const user = await userDao.getUserByUsername(updateParams.username ?? username);
+      const userInfo = user?.toObject();
+      delete userInfo?.password;
+      return res.json(userInfo).status(200);
+    }
   } catch (err) {
     console.log(err);
     return res.status(400).send('Failed to update user');

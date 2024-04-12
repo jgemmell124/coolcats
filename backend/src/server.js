@@ -51,7 +51,7 @@ app.use(express.json());
 
 // log requests
 app.use((req, _res, next) => {
-  const info = `[${new Date().toISOString()}] ${req.method} ${req.path} USER: ${req.session['user']?._id} BODY: ${JSON.stringify(req.body)}`;
+  const info = `[${new Date().toISOString()}] ${req.method} ${req.originalUrl} USER: ${req.session['user']?._id} BODY: ${JSON.stringify(req.body)}`;
   console.info(info.substring(0, 1023));
   next();
 });

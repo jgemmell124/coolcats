@@ -10,7 +10,7 @@ export const UserContext = ({ children }) => {
   useEffect(() => {
     getSession()
       .then((user) => dispatch(loginUser(user)))
-      .catch((err) => dispatch(logoutUser()));
+      .catch(() => dispatch(logoutUser()));
   }, []);
 
   return children;
