@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   BrowserRouter,
   Route,
@@ -16,7 +16,6 @@ import { UserContext } from './auth/userContext';
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
-  console.log('isAuthenticated:', isAuthenticated);
 
   return (
     <UserContext>

@@ -36,7 +36,6 @@ MenuButton.propTypes = {
 const NavBar = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [alert, setAlert] = useState(null);
-  const title = 'Navbar title';
   const { isAuthenticated } = useSelector((state) => state.auth);
   const username = useSelector((state) => state.auth.user.username);
   const dispatch = useDispatch();

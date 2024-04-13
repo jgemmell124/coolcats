@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../auth/authSlice';
 import { login } from '../apis/Auth';
@@ -12,9 +11,6 @@ import {
   InputAdornment,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import Input from '@mui/material/Input';
-import FilledInput from '@mui/material/FilledInput';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -47,13 +43,25 @@ const LoginPage = () => {
   };
 
   return (
-    <div className='vh-100 secondary' style={{ backgroundColor: '#A9333A' }}>
+    <div
+      className='vh-100 secondary'
+      style={{
+        backgroundImage: 'url(/wollastonsBackgroundBlurred.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backdropFilter: 'blur(500px)',
+      }}
+    >
       <div className='container py-5 h-100'>
         <div className='row d-flex justify-content-center align-items-center h-100'>
           <div className='col-12 col-md-8 col-lg-6 col-xl-5'>
             <div
               className='card shadow-2-strong'
-              style={{ borderRadius: '1rem', border: '2px solid black' }}
+              style={{
+                borderRadius: '1rem',
+                border: '2px solid black',
+                boxShadow: '0px 0px 10px 1px black',
+              }}
             >
               <div className='card-body p-5 text-center'>
                 <h3 className='mb-5'>Sign in</h3>

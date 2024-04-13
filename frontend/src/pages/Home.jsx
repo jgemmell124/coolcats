@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getAllSandwiches } from '../apis/Sandwiches';
 import { getAllUsers } from '../apis/Users';
 import { Container, Stack } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const HomePage = () => {
   const [users, setUsers] = useState([]);
