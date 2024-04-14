@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAllSandwiches } from '../apis/Sandwiches';
 import { getAllUsers } from '../apis/Users';
+import SandwichCard from '../components/SandwichCard';
 
 const HomePage = () => {
   const [users, setUsers] = useState([]);
@@ -20,6 +21,7 @@ const HomePage = () => {
     <div style={{ alignItems: 'center' }}>
       <h1>Welcome to our page!</h1>
       <p>Feel free to browse around and discover all the awesome things we have to offer.</p>
+      <SandwichCard></SandwichCard>
       {users.map((user) => (
         <div key={user._id}>
           <h2>{user.username}</h2>
