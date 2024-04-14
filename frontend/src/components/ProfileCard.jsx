@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { 
+import {
   Button,
-  CardMedia, 
-  CardHeader, 
+  CardMedia,
+  CardHeader,
   CardContent,
   Grid,
   TextField,
@@ -20,7 +20,7 @@ import { selectAuth } from '../auth/authSlice';
 import { ROLES_ENUM } from '../utils/constants';
 import { Box } from '@mui/system';
 import { updateUser } from '../apis/Users';
-import Alert from './Alert';
+import StatusAlert from './StatusAlert';
 
 const ProfileCard = ({ currentUser, setCurrentUser }) => {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -34,7 +34,7 @@ const ProfileCard = ({ currentUser, setCurrentUser }) => {
 
   const roleDropDown = (
     isAdmin &&
-    <InputLabel 
+    <InputLabel
       sx={{ color: 'black' }}
     >
       {'Role: '}
@@ -57,17 +57,17 @@ const ProfileCard = ({ currentUser, setCurrentUser }) => {
 
       )
         : (
-          <TextField 
+          <TextField
             size='small'
             disabled={!isEditMode}
-            InputProps={{ disableUnderline: !isEditMode }} 
+            InputProps={{ disableUnderline: !isEditMode }}
             variant='standard'
-            value={editedUser.role} 
+            value={editedUser.role}
             sx={{
               '& .MuiInputBase-input.Mui-disabled': {
                 WebkitTextFillColor: 'grey',
               },
-            }} 
+            }}
           />
         )}
     </InputLabel>
@@ -83,7 +83,7 @@ const ProfileCard = ({ currentUser, setCurrentUser }) => {
     const handleSave = async () => {
       // save profile
       try {
-        const updatedUser = await updateUser(currentUser.username, editedUser);
+        const updatedUser = await updateUser(currentUser._id, editedUser);
         setIsEditMode(false);
         setCurrentUser(updatedUser);
         setEditedUser(updatedUser);
@@ -125,7 +125,7 @@ const ProfileCard = ({ currentUser, setCurrentUser }) => {
             '& .MuiInputBase-input.Mui-disabled': {
               WebkitTextFillColor: '#000000',
             },
-          }} 
+          }}
         />
       </Box>
     </Box>
@@ -149,7 +149,7 @@ const ProfileCard = ({ currentUser, setCurrentUser }) => {
         <Grid container spacing={2}>
           <Grid xs={3} item alignSelf={'center'}>
             <Tooltip title={isEditMode ? 'Change Profile Picture' : ''}>
-              <IconButton 
+              <IconButton
                 component='label'
                 disabled={!isEditMode}
               >
@@ -157,7 +157,7 @@ const ProfileCard = ({ currentUser, setCurrentUser }) => {
                   component='img'
                   image='/Snoopy-doghouse-1.jpg'
                   alt='Snoopy doghouse'
-                  sx={{ padding: '4px',  borderRadius: '50%', border: `${isEditMode ? '1px dashed grey' : ''}` }}
+                  sx={{ padding: '4px', borderRadius: '50%', border: `${isEditMode ? '1px dashed grey' : ''}` }}
                   style={{ width: '100%', height: 'auto' }}
                 />
                 {/* TODO upload an actual image */}
@@ -166,26 +166,26 @@ const ProfileCard = ({ currentUser, setCurrentUser }) => {
             </Tooltip>
           </Grid>
           <Grid item xs={9}>
-            <CardHeader 
+            <CardHeader
               action={(isAdmin || isSelf) && (isEditMode ? saveProfileButton() : editProfileButton())}
               title={usernameField}
               subheader={isAdmin ? `User ID: ${_id}` : ''}
               subheaderTypographyProps={{
                 variant: 'subtitle2',
                 color: 'gret',
-              
+
               }}
             />
             <CardContent sx={{ flex: '2 0 auto' }}>
               <div style={{ margin: '10px' }}>
                 <InputLabel sx={{ color: 'black' }}>{'Name: '}
-                  <TextField 
+                  <TextField
                     size='small'
                     disabled={!isEditMode}
                     InputProps={{ disableUnderline: !isEditMode }}
                     variant='standard'
                     onChange={e => setEditedUser({ ...editedUser, name: e.target.value })}
-                    value={editedUser.name} 
+                    value={editedUser.name}
                     sx={{
                       '& .MuiInputBase-input.Mui-disabled': {
                         WebkitTextFillColor: 'grey',
@@ -197,8 +197,8 @@ const ProfileCard = ({ currentUser, setCurrentUser }) => {
               {email &&
                 <div style={{ margin: '10px' }}>
                   <InputLabel sx={{ color: 'black' }}>{'Email: '}
-                    <TextField 
-                      size='small' 
+                    <TextField
+                      size='small'
                       disabled={!isEditMode}
                       InputProps={{ disableUnderline: !isEditMode }}
                       variant='standard'
@@ -219,8 +219,8 @@ const ProfileCard = ({ currentUser, setCurrentUser }) => {
               {(isAdmin || isSelf) && isEditMode &&
                 <div style={{ margin: '10px' }}>
                   <InputLabel sx={{ color: 'black' }}>{'Change Password: '}
-                    <TextField 
-                      size='small' 
+                    <TextField
+                      size='small'
                       disabled={!isEditMode}
                       InputProps={{ disableUnderline: !isEditMode }}
                       variant='standard'
@@ -234,7 +234,7 @@ const ProfileCard = ({ currentUser, setCurrentUser }) => {
               {(isAdmin || isSelf) && isEditMode &&
                 <div style={{ margin: '10px' }}>
                   <InputLabel sx={{ color: 'black' }}>{'Confirm Change Password:'}
-                    <TextField 
+                    <TextField
                       size='small'
                       disabled={!isEditMode}
                       InputProps={{ disableUnderline: !isEditMode }}
@@ -250,7 +250,11 @@ const ProfileCard = ({ currentUser, setCurrentUser }) => {
           </Grid>
         </Grid>
       </Box>
-      <Alert alert={error} setAlert={setError} />
+      <StatusAlert
+        message={error}
+        setMessage={setError}
+        status='alert-danger'
+      />
     </>
   );
 };

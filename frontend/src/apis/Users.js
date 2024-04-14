@@ -12,12 +12,12 @@ export const getAllUsers = (params = null) => {
   return authGet(USERS_URL + (params ? `?${new URLSearchParams(params)}` : ''));
 };
 
-export const deleteUser = (username) => {
-  return authDelete(`${USERS_URL}/${username}`);
+export const deleteUser = (uid) => {
+  return authDelete(`${USERS_URL}/${uid}`);
 };
 
-export const updateUser = (username, updateParams) => {
-  return authPut(`${USERS_URL}/${username}`, updateParams);
+export const updateUser = (uid, updateParams) => {
+  return authPut(`${USERS_URL}/${uid}`, updateParams);
 };
 
 export const createUser = (user) => {

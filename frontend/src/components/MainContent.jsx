@@ -5,15 +5,18 @@ import HomePage from '../pages/Home';
 import NotFound from '../pages/NotFound';
 import ProfilePage from '../pages/ProfilePage';
 import UserProfilePage from '../pages/UserProfilePage';
+import Sandwiches from '../pages/Sandwiches';
 import ResponsiveNavBar from './NavBar';
 import AllUsersPage from '../pages/AllUsersPage';
-import { ROLES_ENUM } from '../utils/constants';
+
 import { useSelector } from 'react-redux';
 import { selectRole } from '../auth/authSlice';
+import { ROLES_ENUM } from '../utils/constants';
 
 const MainContent = () => {
-  const userRole = useSelector(selectRole);
-  const isAdmin = userRole === ROLES_ENUM.ADMIN;
+  const role = useSelector(selectRole);
+  const isAdmin = role === ROLES_ENUM.ADMIN;
+  const isEmployee = role === ROLES_ENUM.EMPLOYEE;
 
   return (
     <div
@@ -39,6 +42,7 @@ const MainContent = () => {
               path='/allUsers'
               element={isAdmin ? <AllUsersPage /> : <NotFound />}
             />
+            <Route path='/sandwiches' element={(isAdmin || isEmployee) ? <Sandwiches /> : <NotFound />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
         </Container>

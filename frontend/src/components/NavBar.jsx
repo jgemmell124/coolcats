@@ -18,24 +18,18 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { logout } from '../apis/Auth';
 import { logoutUser, selectAuth } from '../auth/authSlice';
 import { ROLES_ENUM } from '../utils/constants';
-import { selectRole } from '../auth/authSlice';
 
 const ResponsiveNavBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const { isAuthenticated, user } = useSelector(selectAuth);
   const username = user?.username;
-  const userRole = useSelector(selectRole) ?? 'GUEST';
-  console.log(`userRole = ${userRole}`);
+  const userRole = user?.role;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const userHasAccess = (highestAccess) => {
-    console.log(
-      `in userHasAccess with highestAccess = ${highestAccess} and userRole = ${userRole}`
-    );
-
     if (highestAccess === ROLES_ENUM.GUEST) return true;
     if (highestAccess === ROLES_ENUM.USER && userRole !== ROLES_ENUM.GUEST)
       return true;
@@ -46,7 +40,6 @@ const ResponsiveNavBar = () => {
       return true;
     if (highestAccess === ROLES_ENUM.ADMIN && userRole === ROLES_ENUM.ADMIN)
       return true;
-    console.log(`returning false for ${highestAccess}`);
     return false;
   };
 
@@ -83,13 +76,9 @@ const ResponsiveNavBar = () => {
 
   const pages = [
     { title: 'Home', url: '/', highestRole: ROLES_ENUM.GUEST },
-    {
-      title: 'Sandwiches',
-      url: '/sandwiches',
-      highestRole: ROLES_ENUM.EMPLOYEE,
-    },
-    { title: 'Your Stats', url: '/stats', highestRole: ROLES_ENUM.USER },
+    { title: 'All Sandwiches', url: '/sandwiches', highestRole: ROLES_ENUM.EMPLOYEE },
     { title: 'All Users', url: '/allUsers', highestRole: ROLES_ENUM.ADMIN },
+    { title: 'Your Stats', url: '/stats', highestRole: ROLES_ENUM.USER },
   ].filter((page) => userHasAccess(page.highestRole));
 
   const accountMenu = [
@@ -151,7 +140,7 @@ const ResponsiveNavBar = () => {
   const logSandwichButtonMobile = (
     <Button
       variant='contained'
-      onClick={() => {}}
+      onClick={() => { }}
       sx={{
         marginTop: '5px',
         marginLeft: '5px',

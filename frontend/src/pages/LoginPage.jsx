@@ -14,6 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import StatusAlert from '../components/StatusAlert';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -101,7 +102,13 @@ const LoginPage = () => {
 
                 <div className='form-outline mb-4'></div>
 
-                {error && <div className='alert alert-danger'>{error}</div>}
+                {error &&
+                  <StatusAlert
+                    message={error}
+                    setMessage={setError}
+                    status='alert-danger'
+                  />
+                }
 
                 <Button
                   size='large'

@@ -1,55 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { getAllUsers } from '../apis/Users';
-import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditUserModal from '../components/EditUserModal';
-import { visuallyHidden } from '@mui/utils';
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
+import EnhancedTableHead from '../components/EnhancedTableHead';
+import { getComparator, stableSort } from '../helpers/tableHelpers';
+import EnhancedTableToolbar from '../components/EnhancedTableToolbar';
+import DeleteConfirmDialog from '../components/DeleteConfirmDialog';
+import { deleteUser } from '../apis/Users';
+import StatusAlert from '../components/StatusAlert';
+import { Box, Button } from '@mui/material';
 
 const headCells = [
   { id: 'username', label: 'Username' },
@@ -58,125 +27,8 @@ const headCells = [
   { id: 'role', label: 'Role' },
 ];
 
-function EnhancedTableHead(props) {
-  const {
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
-
-  return (
-    <TableHead>
-      <TableRow
-        sx={{
-          '.MuiTableCell-root': {
-            borderBottom: '2px solid #A9333A',
-          },
-        }}
-      >
-        <TableCell padding='checkbox'>
-          <Checkbox
-            color='primary'
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all users',
-            }}
-          />
-        </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={'left'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              <b>{headCell.label}</b>
-              {orderBy === headCell.id ? (
-                <Box component='span' sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-        <TableCell padding='checkbox'></TableCell>
-      </TableRow>
-    </TableHead>
-  );
-}
-
-EnhancedTableHead.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-  onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-  orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
-};
-
-function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
-
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) => alpha(theme.palette.primary.main),
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%', fontWeight: 'bold', fontSize: '20px' }}
-          color='inherit'
-          variant='subtitle1'
-          component='div'
-        >
-          {numSelected} User{numSelected > 1 ? 's' : ''} Selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant='h5'
-          id='tableTitle'
-          component='div'
-        >
-          <b>All Wolliesboxd Users</b>
-        </Typography>
-      )}
-
-      {numSelected > 0 && (
-        <Tooltip title='Delete'>
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
-  );
-}
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
-
 export default function AllUsersPage() {
   const [users, setUsers] = useState([]);
-  // const username = useSelector((state) => state.auth.user.username);
 
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('username');
@@ -185,7 +37,11 @@ export default function AllUsersPage() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const [showEditModal, setShowEditModal] = React.useState(false);
-  const [userToEdit, setUserToEdit] = React.useState({});
+  const [showCreateUserModal, setShowCreateUserModal] = React.useState(false);
+  const [showDeleteConfirmDialog, setShowDeleteConfirmDialog] = useState(false);
+  const [selectedUser, setSelectedUser] = React.useState({});
+  const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -254,133 +110,207 @@ export default function AllUsersPage() {
   }, []);
 
   return (
-    <Container
+    <Box
       sx={{
-        width: '100%',
-        marginLeft: 'auto',
-        overflowX: 'auto',
-        marginTop: '20px',
-        marginBottom: '20px',
-        backgroundColor: 'rgba(248, 223, 139, 0.4)',
-        borderRadius: '10px',
-        boxShadow: '0px 0px 10px 1px black',
-      }}
-    >
-      <Stack sx={{ alignItems: 'left' }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-
-        <Table
-          sx={{
-            minWidth: 750,
-          }}
-          aria-labelledby='tableTitle'
-        >
-          <EnhancedTableHead
+        display: 'flex',
+        flexDirection: 'column',
+      }}>
+      <Button
+        style={{
+          fontFamily: 'Gill Sans',
+          fontSize: '18px',
+        }}
+        sx={{
+          color: 'green',
+          marginLeft: 'auto',
+        }}
+        onClick={() => {
+          setShowCreateUserModal(true);
+        }}>
+        Create User
+      </Button>
+      <Container
+        sx={{
+          width: '100%',
+          marginLeft: 'auto',
+          overflowX: 'auto',
+          marginTop: '20px',
+          marginBottom: '20px',
+          backgroundColor: 'rgba(248, 223, 139, 0.4)',
+          borderRadius: '10px',
+          boxShadow: '0px 0px 10px 1px black',
+        }}
+      >
+        <Stack sx={{ alignItems: 'left' }}>
+          <EnhancedTableToolbar
             numSelected={selected.length}
-            order={order}
-            orderBy={orderBy}
-            onSelectAllClick={handleSelectAllClick}
-            onRequestSort={handleRequestSort}
-            rowCount={users.length}
+            title='User'
+            titlePlural='Users'
           />
-          <TableBody>
-            {visibleRows.map((row, index) => {
-              const isItemSelected = isSelected(row.username);
-              const labelId = `enhanced-table-checkbox-${index}`;
 
-              return (
-                <TableRow
-                  hover
-                  role='checkbox'
-                  aria-checked={isItemSelected}
-                  tabIndex={-1}
-                  key={row.username}
-                  selected={isItemSelected}
-                  sx={{
-                    borderBottom: '1px solid black',
-                    '.MuiTableCell-root': {
-                      borderBottom: 'none',
-                    },
-                  }}
-                >
-                  <TableCell padding='checkbox'>
-                    <Checkbox
-                      color='primary'
-                      checked={isItemSelected}
-                      onClick={(event) => handleClick(event, row.username)}
-                      inputProps={{
-                        'aria-labelledby': labelId,
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell
-                    component='th'
-                    id={labelId}
-                    scope='row'
-                    padding='none'
+          <Table
+            sx={{
+              minWidth: 750,
+            }}
+            aria-labelledby='tableTitle'
+          >
+            <EnhancedTableHead
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={users.length}
+              headCells={headCells}
+            />
+            <TableBody>
+              {visibleRows.map((row, index) => {
+                const isItemSelected = isSelected(row.username);
+                const labelId = `enhanced-table-checkbox-${index}`;
+
+                return (
+                  <TableRow
+                    hover
+                    role='checkbox'
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.username}
+                    selected={isItemSelected}
                     sx={{
                       borderBottom: '1px solid black',
+                      '.MuiTableCell-root': {
+                        borderBottom: 'none',
+                      },
                     }}
                   >
-                    {row.username}
-                  </TableCell>
-                  <TableCell align='left'>{row.email}</TableCell>
-                  <TableCell align='left'>{row.name}</TableCell>
-                  <TableCell align='left'>{row.role}</TableCell>
-                  <TableCell padding='checkbox'>
-                    <IconButton
-                      onClick={() => {
-                        setUserToEdit(row);
-                        setShowEditModal(true);
+                    <TableCell padding='checkbox'>
+                      <Checkbox
+                        color='primary'
+                        checked={isItemSelected}
+                        onClick={(event) => handleClick(event, row.username)}
+                        inputProps={{
+                          'aria-labelledby': labelId,
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell
+                      component='th'
+                      id={labelId}
+                      scope='row'
+                      padding='none'
+                      sx={{
+                        borderBottom: '1px solid black',
                       }}
                     >
-                      <EditIcon />
-                    </IconButton>
-                  </TableCell>
+                      {row.username}
+                    </TableCell>
+                    <TableCell align='left'>{row.email}</TableCell>
+                    <TableCell align='left'>{row.name}</TableCell>
+                    <TableCell align='left'>{row.role}</TableCell>
+                    <TableCell padding='checkbox'>
+                      <IconButton
+                        onClick={() => {
+                          setSelectedUser(row);
+                          setShowEditModal(true);
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        onClick={() => {
+                          setSelectedUser(row);
+                          setShowDeleteConfirmDialog(true);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+              {emptyRows > 0 && (
+                <TableRow
+                  style={{
+                    height: 53 * emptyRows,
+                  }}
+                >
+                  <TableCell colSpan={6} />
                 </TableRow>
-              );
-            })}
-            {emptyRows > 0 && (
-              <TableRow
-                style={{
-                  height: 53 * emptyRows,
-                }}
-              >
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 50]}
-          component='div'
-          count={users.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          sx={{
-            display: 'flex',
-            justifyContent: 'right',
-            alignItems: 'center',
-            alignContent: 'center',
-            margin: '0px',
-            '& .MuiTablePagination-selectLabel': {
+              )}
+            </TableBody>
+          </Table>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50]}
+            component='div'
+            count={users.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            sx={{
+              display: 'flex',
+              justifyContent: 'right',
+              alignItems: 'center',
+              alignContent: 'center',
               margin: '0px',
-            },
-            '& .MuiTablePagination-displayedRows': {
-              margin: '0px',
-            },
-          }}
-        />
-        {showEditModal && (
-          <EditUserModal
-            user={userToEdit}
-            open={showEditModal}
-            setShowEditModal={setShowEditModal}
+              '& .MuiTablePagination-selectLabel': {
+                margin: '0px',
+              },
+              '& .MuiTablePagination-displayedRows': {
+                margin: '0px',
+              },
+            }}
           />
-        )}
-      </Stack>
-    </Container>
+          {showCreateUserModal &&
+            <EditUserModal
+              open={showCreateUserModal}
+              setShowEditModal={setShowCreateUserModal}
+              setError={setError}
+              setSuccess={setSuccess}
+              action='Create'
+              selectedUser={{}}
+            />
+          }
+          {showEditModal && (
+            <EditUserModal
+              selectedUser={selectedUser}
+              open={showEditModal}
+              setShowEditModal={setShowEditModal}
+              setError={setError}
+              setSuccess={setSuccess}
+              action='Edit'
+            />
+          )}
+          {showDeleteConfirmDialog &&
+            <DeleteConfirmDialog
+              selectedItem={selectedUser}
+              itemType='User'
+              name={selectedUser.username}
+              open={showDeleteConfirmDialog}
+              deleteFunc={deleteUser}
+              setShowDeleteConfirmDialog={setShowDeleteConfirmDialog}
+              setError={setError}
+              setSuccess={setSuccess}
+            />
+          }
+          {error &&
+            <StatusAlert
+              message={error}
+              setMessage={setError}
+              status='alert-danger'
+            />
+          }
+          {success &&
+            <StatusAlert
+              message={success}
+              setMessage={setSuccess}
+              status='alert-success'
+            />
+          }
+        </Stack>
+      </Container>
+    </Box>
   );
 }

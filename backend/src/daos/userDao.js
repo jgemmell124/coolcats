@@ -12,12 +12,12 @@ export const createUser = (user) => {
   return userModel.create(user);
 };
 
-export const updateUser = (username, updates) => {
-  return userModel.updateOne({ username }, { $set: updates });
+export const updateUser = (uid, updates) => {
+  return userModel.updateOne({ _id: uid }, { $set: updates });
 };
 
-export const deleteUser = (username) => {
-  return userModel.deleteOne({ username });
+export const deleteUser = (uid) => {
+  return userModel.deleteOne({ _id: uid });
 };
 
 export const findUserByCredentials = (username, password) => {

@@ -9,35 +9,59 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  DialogActions,
 } from '@mui/material';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import FormControl from '@mui/material/FormControl';
+import { createUser, updateUser } from '../apis/Users';
 
-const EditUserModal = ({ open, user, setShowEditModal }) => {
-  const [role, setRole] = React.useState(user.role);
-  const [email, setEmail] = React.useState(user.email);
-  const [fullName, setFullName] = React.useState(user.name);
-  const [username, setUsername] = React.useState(user.username);
-
-  // const [error, setError] = React.useState(null);
+const EditUserModal = ({ open, selectedUser, setShowEditModal, action, setError, setSuccess }) => {
+  const [role, setRole] = React.useState(selectedUser.role);
+  const [email, setEmail] = React.useState(selectedUser.email);
+  const [name, setName] = React.useState(selectedUser.name);
+  const [username, setUsername] = React.useState(selectedUser.username);
 
   const handleClose = () => {
     setShowEditModal(false);
   };
 
+  const handleSubmit = () => {
+    setError(null);
+    const userParams = { username, email, password: '123', name, role };
+    if (action === 'Create') {
+      createUser(userParams)
+        .then(() => {
+          setSuccess('User created successfully!');
+        })
+        .catch((err) => {
+          setError(err?.response?.data ?? err.message);
+          return;
+        });
+    } else if (action === 'Edit') {
+      updateUser(selectedUser._id, userParams)
+        .then(() => {
+          setSuccess('User saved successfully!');
+        })
+        .catch((err) => {
+          setError(err?.response?.data ?? err.message);
+          return;
+        });
+    }
+    handleClose();
+  };
+
   React.useEffect(() => {
-    setRole(user.role);
-    setEmail(user.email);
-    setFullName(user.name);
-    setUsername(user.username);
-  }, [user]);
+    setRole(selectedUser.role);
+    setEmail(selectedUser.email);
+    setName(selectedUser.name);
+    setUsername(selectedUser.username);
+  }, [selectedUser]);
 
   const noEditsApplied = () => {
     return (
-      role === user.role &&
-      email === user.email &&
-      fullName === user.name &&
-      username === user.username
+      role === selectedUser.role &&
+      email === selectedUser.email &&
+      name === selectedUser.name &&
+      username === selectedUser.username
     );
   };
 
@@ -47,9 +71,7 @@ const EditUserModal = ({ open, user, setShowEditModal }) => {
         direction='column'
         sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
-        <DialogTitle>
-          <b>Edit User Details</b>
-        </DialogTitle>
+        <DialogTitle><b>{action} User</b></DialogTitle>
 
         <TextField
           id='username-input'
@@ -61,10 +83,10 @@ const EditUserModal = ({ open, user, setShowEditModal }) => {
 
         <TextField
           id='name-input'
-          defaultValue={fullName}
+          defaultValue={name}
           label='Full Name'
           sx={{ width: '300px', marginBottom: '15px' }}
-          onChange={(e) => setFullName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
         />
 
         <TextField
@@ -88,37 +110,32 @@ const EditUserModal = ({ open, user, setShowEditModal }) => {
             onChange={(event) => setRole(event.target.value)}
           >
             <MenuItem value={'USER'}>USER</MenuItem>
-            <MenuItem value={'EMPLOYEE'}>EMLPOYEE</MenuItem>
+            <MenuItem value={'EMPLOYEE'}>EMPLOYEE</MenuItem>
             <MenuItem value={'ADMIN'}>ADMIN</MenuItem>
           </Select>
         </FormControl>
-
-        {/* {error && <div className='alert alert-danger'>{error}</div>} */}
-
-        <Button
-          variant='contained'
-          color='success'
-          sx={{ marginBottom: '25px' }}
-          disabled={
-            noEditsApplied() || !username || !email || !fullName || !role
-          }
-          onClick={() => {
-            // TODO: actually save the changes -- maybe show a response message on success/failure
-            // TODO: maybe add a tooltip for disabled button that says you must change at least one field
-            setShowEditModal(false);
-          }}
-        >
-          <SaveAltIcon sx={{ marginRight: '5px' }} /> Save Changes
-        </Button>
       </Stack>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button
+          type='submit'
+          disabled={noEditsApplied() || !username || !email || !name || !role}
+          onClick={handleSubmit}
+        >
+          {action === 'Create' ? 'Create' : 'Save'}
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };
 
 EditUserModal.propTypes = {
-  open: PropTypes.bool,
-  user: PropTypes.object,
-  setShowEditModal: PropTypes.func,
+  open: PropTypes.bool.isRequired,
+  selectedUser: PropTypes.object,
+  setShowEditModal: PropTypes.func.isRequired,
+  action: PropTypes.string.isRequired,
+  setError: PropTypes.func.isRequired,
+  setSuccess: PropTypes.func.isRequired
 };
 
 export default EditUserModal;
