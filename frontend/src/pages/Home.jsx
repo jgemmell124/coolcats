@@ -23,13 +23,42 @@ const HomePage = () => {
       <Grid container spacing={2}>
         <Grid xs={9}>
           <h1 style={{ paddingTop: '2rem' }}>Website title goes here</h1>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+          <h2
+            style={{
+              position: 'relative',
+              bottom: '-8rem',
+            }}
+          >
+            Locations
+          </h2>
           <iframe
             width='50%'
             height='50%'
-            style={{ border: '0', float: 'left', paddingTop: '1rem' }}
+            style={{
+              border: '0',
+              float: 'left',
+              paddingTop: '1rem',
+              position: 'relative',
+              bottom: '-10rem',
+            }}
             loading='lazy'
             allowfullscreen
             src='https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ3V9Axxh644kRYpjOb4LAAPg&key=AIzaSyBCgHzQFq8djSJDNbhlzBqjj_x49SI58yw'
+          ></iframe>
+          <iframe
+            width='50%'
+            height='50%'
+            style={{
+              border: '0',
+              float: 'right',
+              paddingTop: '1rem',
+              position: 'relative',
+              bottom: '-10rem',
+            }}
+            loading='lazy'
+            allowfullscreen
+            src='https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ07NCiCF644kRokxOOSJwRuc&key=AIzaSyBCgHzQFq8djSJDNbhlzBqjj_x49SI58yw'
           ></iframe>
         </Grid>
         <Grid xs={2}>
@@ -59,37 +88,33 @@ const HomePage = () => {
         </Grid>
       </Grid>
       <div
+        style={{ backgroundColor: 'gray' }}
         id='carouselExampleControls'
         className='carousel slide'
         data-ride='carousel'
       >
         <div className='carousel-inner'>
-          <div className='carousel-item active'>
+          <div
+            className='carousel-item active'
+            style={{ float: 'center', left: '25%' }}
+          >
             <SandwichCard></SandwichCard>
           </div>
-          <div className='carousel-item'>
+          <div className='carousel-item' style={{ float: 'center' }}>
             <SandwichCard></SandwichCard>
           </div>
-          <div className='carousel-item'>
+          <div className='carousel-item' style={{ float: 'center' }}>
             <SandwichCard></SandwichCard>
           </div>
         </div>
-        <a
-          className='carousel-control-prev'
-          role='button'
-          data-slide='prev'
-        >
+        <a className='carousel-control-prev' role='button' data-slide='prev'>
           <span
             className='carousel-control-prev-icon'
             aria-hidden='true'
           ></span>
           <span className='sr-only'>Previous</span>
         </a>
-        <a
-          className='carousel-control-next'
-          role='button'
-          data-slide='next'
-        >
+        <a className='carousel-control-next' role='button' data-slide='next'>
           <span
             className='carousel-control-next-icon'
             aria-hidden='true'
