@@ -23,7 +23,7 @@ const ResponsiveNavBar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const { isAuthenticated, user } = useSelector(selectAuth);
   const username = user?.username;
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -61,7 +61,8 @@ const ResponsiveNavBar = () => {
   const pages = [
     { title: 'Home', url: '/' },
     { title: 'Sandwiches', url: '/sandwiches' },
-    { title: 'Your Stats', url: '/stats', }
+    { title: 'Your Stats', url: '/stats' },
+    { title: 'All Users', url: '/allUsers' },
   ];
 
   const accountMenu = [
@@ -69,66 +70,55 @@ const ResponsiveNavBar = () => {
     { title: 'Logout', handler: handleSignout },
   ];
 
-  const profileButton = (
-    isAuthenticated ? (
-      <Box sx={{ flexGrow: 0 }}>
-        <Tooltip title='Open settings'>
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-            <Avatar alt='Remy Sharp' src='emptyProfilePic.png' />
-            <Typography 
-              display={{ xs: 'none', sm: 'block' }}
-              color={'white'} 
-              paddingLeft={'8px'}
-              fontFamily={'monospace'}
-            >
-              {`${username ?? 'login'}`}
-              <ArrowDropDownIcon color='white' />
-            </Typography>
-          </IconButton>
-        </Tooltip>
-        <Menu
-          sx={{ mt: '45px' }}
-          id='menu-appbar'
-          anchorEl={anchorElUser}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          open={Boolean(anchorElUser)}
-          onClose={handleCloseUserMenu}
-        >
-          {accountMenu.map((setting) => (
-            <MenuItem key={setting.title} 
-              onClick={() => {
-                handleCloseUserMenu();
-                setting.handler();
-              }}
-            >
-              <Typography textAlign='center'>{setting.title}</Typography>
-            </MenuItem>
-          ))}
-        </Menu>
-      </Box>
-    )
-      :
-      (
-        <NavLink 
-          to={'/login'} 
-          style={{ color: 'white', textDecoration: 'none' }}
-        >
-          <Button
-            sx={{ my: 2, color: 'white', display: 'block' }}
-
+  const profileButton = isAuthenticated ? (
+    <Box sx={{ flexGrow: 0 }}>
+      <Tooltip title='Open settings'>
+        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+          <Avatar alt='Remy Sharp' src='emptyProfilePic.png' />
+          <Typography
+            display={{ xs: 'none', sm: 'block' }}
+            color={'white'}
+            paddingLeft={'8px'}
+            fontFamily={'monospace'}
           >
-            Sign In
-          </Button>
-        </NavLink>
-      )
+            {`${username ?? 'login'}`}
+            <ArrowDropDownIcon color='white' />
+          </Typography>
+        </IconButton>
+      </Tooltip>
+      <Menu
+        sx={{ mt: '45px' }}
+        id='menu-appbar'
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseUserMenu}
+      >
+        {accountMenu.map((setting) => (
+          <MenuItem
+            key={setting.title}
+            onClick={() => {
+              handleCloseUserMenu();
+              setting.handler();
+            }}
+          >
+            <Typography textAlign='center'>{setting.title}</Typography>
+          </MenuItem>
+        ))}
+      </Menu>
+    </Box>
+  ) : (
+    <NavLink to={'/login'} style={{ color: 'white', textDecoration: 'none' }}>
+      <Button sx={{ my: 2, color: 'white', display: 'block' }}>Sign In</Button>
+    </NavLink>
   );
 
   const logSandwichButtonMobile = (
@@ -149,7 +139,7 @@ const ResponsiveNavBar = () => {
   );
 
   return (
-    <AppBar 
+    <AppBar
       position='static'
       sx={{
         backgroundColor: '#090910',
@@ -206,10 +196,11 @@ const ResponsiveNavBar = () => {
             >
               {pages.map((page) => (
                 <MenuItem key={page.title} onClick={handleCloseNavMenu}>
-                  <NavLink to={page.url} style={{ color: 'black', textDecoration: 'none' }}>
-                    <Typography textAlign='center'>
-                      {page.title}
-                    </Typography>
+                  <NavLink
+                    to={page.url}
+                    style={{ color: 'black', textDecoration: 'none' }}
+                  >
+                    <Typography textAlign='center'>{page.title}</Typography>
                   </NavLink>
                 </MenuItem>
               ))}
@@ -238,26 +229,25 @@ const ResponsiveNavBar = () => {
           {/* Desktop screen button menu */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <NavLink 
+              <NavLink
                 key={page.title}
-                to={page.url} 
+                to={page.url}
                 style={{ color: 'white', textDecoration: 'none' }}
               >
                 <Button
                   key={page.title}
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: 'white', display: 'block' }}
-
                 >
                   {page.title}
                 </Button>
               </NavLink>
             ))}
-            {isAuthenticated &&
+            {isAuthenticated && (
               <Button
                 variant='contained'
                 onClick={handleCloseNavMenu}
-                sx={{ 
+                sx={{
                   my: 2,
                   display: 'block',
                   marginLeft: 'auto',
@@ -269,7 +259,7 @@ const ResponsiveNavBar = () => {
                 <AddIcon />
                 Log Sandwich
               </Button>
-            }
+            )}
           </Box>
           {/* profile button */}
           {profileButton}

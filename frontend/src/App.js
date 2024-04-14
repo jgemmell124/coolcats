@@ -22,10 +22,10 @@ function App() {
               These routes only available to those NOT logged in.
               This just means that if you are signed in then you cannot see the login or signup page.
             */}
-            <Route exact path='/login' element={<LoginPage />}/>
-            <Route exact path='/signup' element={<SignupPage />}/>
+            <Route exact path='/login' element={<LoginPage />} />
+            <Route exact path='/signup' element={<SignupPage />} />
           </Route>
-          <Route path='*'element={<MainContent />} />
+          <Route path='*' element={<MainContent />} />
         </Routes>
       </BrowserRouter>
     </UserContext>
