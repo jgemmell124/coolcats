@@ -8,7 +8,7 @@ export const getUser = (username) => {
   return authGet(`${USERS_URL}/${username}`);
 };
 
-export const getAllUsers = (params=null) => {
+export const getAllUsers = (params = null) => {
   return authGet(USERS_URL + (params ? `?${new URLSearchParams(params)}` : ''));
 };
 

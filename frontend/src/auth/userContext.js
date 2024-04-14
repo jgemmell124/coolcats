@@ -9,8 +9,8 @@ export const UserContext = ({ children }) => {
 
   useEffect(() => {
     getSession()
-      .then(user => dispatch(loginUser(user)))
-      .catch(() => dispatch(logoutUser())); 
+      .then((user) => dispatch(loginUser(user)))
+      .catch((err) => dispatch(logoutUser()));
   }, []);
 
   return children;

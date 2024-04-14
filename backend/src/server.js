@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import session from 'express-session';
 import apiRoutes from './apiRoutes/index.js';
 import populateDatabase from './utils/startup.js';
+import 'dotenv/config';
 
 // NOTE: make sure your node env is set to 'development' locally
 
@@ -22,7 +23,6 @@ if (process.env.NODE_ENV === 'development') {
 const app = express();
 
 // middleware
-
 
 app.use(
   cors({
@@ -60,7 +60,12 @@ app.use((req, _res, next) => {
 app.use((req, res, next) => {
   const oldSend = res.send;
   res.send = function (data) {
-    console.info(`[${new Date().toISOString()}] Response: ${req.method} ${req.originalUrl} DATA: ${data}`.substring(0, 1023));
+    console.info(
+      `[${new Date().toISOString()}] Response: ${req.method} ${req.originalUrl} DATA: ${data}`.substring(
+        0,
+        1023
+      )
+    );
     res.send = oldSend;
     return res.send(data);
   };
