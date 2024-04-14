@@ -4,6 +4,10 @@ export const getUserByUsername = (username) => {
   return userModel.findOne({ username });
 };
 
+export const getUserById = (id) => {
+  return userModel.findOne({ _id: id });
+};
+
 export const createUser = (user) => {
   return userModel.create(user);
 };
