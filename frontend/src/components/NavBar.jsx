@@ -9,7 +9,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AddIcon from '@mui/icons-material/Add';
 import PropTypes from 'prop-types';
 
-const MenuButton = ({ text, onClickFunction }) => (
+const NavBarButton = ({ text, onClickFunction }) => (
   <Button
     onClick={onClickFunction}
     style={{
@@ -28,7 +28,7 @@ const MenuButton = ({ text, onClickFunction }) => (
 );
 
 // Props validation for menu button
-MenuButton.propTypes = {
+NavBarButton.propTypes = {
   text: PropTypes.string.isRequired,
   onClickFunction: PropTypes.func.isRequired,
 };
@@ -106,11 +106,11 @@ const NavBar = () => {
         sx={{
           backgroundColor: '#090910',
           height: '75px',
-          justifyContent: 'space-around',
+          justifyContent: 'center',
           alignItems: 'center',
         }}
       >
-        <a className='navbar-brand' href='#'>
+        <a className='navbar-brand' href='#' style={{ marginRight: '10%' }}>
           <img
             width='250px'
             src='WolliesboxdLogoLight.png'
@@ -177,13 +177,14 @@ const NavBar = () => {
               Logout
             </MenuItem>
           </Menu>
-          <MenuButton text='All Sandwiches' onClickFunction={() => {}} />
-          <MenuButton text='Stats' onClickFunction={() => {}} />
+          <NavBarButton text='Home' onClickFunction={() => {}} />
+          <NavBarButton text='Sandwiches' onClickFunction={() => {}} />
+          <NavBarButton text='Your Stats' onClickFunction={() => {}} />
           <Button
             variant='contained'
             sx={{
-              backgroundColor: '#42852d',
-              ':hover': { backgroundColor: '#52bf30' },
+              backgroundColor: '#52bf30',
+              ':hover': { backgroundColor: '#42852d' },
             }}
           >
             <AddIcon />

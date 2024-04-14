@@ -7,6 +7,8 @@ import {
   InputLabel,
   OutlinedInput,
   InputAdornment,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
@@ -15,37 +17,32 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleClickShowConfirmPassword = () =>
-    setShowConfirmPassword((show) => !show);
 
   const handleMouseDownPassword = () => {
     event.preventDefault();
   };
 
+  const [role, setRole] = useState('');
+  const [email, setEmail] = useState('');
+  const [fullName, setFullName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
 
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
   const handleCreateAccount = async () => {
-    // Confirm the inputted passwords match
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    try {
-      setError(null);
-      createUser({ username, password });
-      setSuccess('Account created successfully!');
-    } catch (err) {
-      setError(err?.response?.data ?? err.message);
-    }
+    setError(null);
+    createUser({ username, password, email, role, name: fullName })
+      .then(() => {
+        setSuccess('Account created successfully!');
+      })
+      .catch((err) => {
+        setError(err?.response?.data ?? err.message);
+        return;
+      });
   };
 
   return (
@@ -73,20 +70,21 @@ const LoginPage = () => {
                 <h3 className='mb-5'>Create Your Account</h3>
 
                 <TextField
-                  id='outlined-required'
+                  id='username-input'
                   label='Username'
-                  sx={{ width: '300px' }}
+                  sx={{ width: '300px', marginBottom: '10px' }}
                   onChange={(e) => setUsername(e.target.value)}
                 />
 
                 <br />
 
-                <FormControl sx={{ m: 1, width: '300px' }} variant='outlined'>
-                  <InputLabel htmlFor='outlined-adornment-password'>
-                    Password
-                  </InputLabel>
+                <FormControl
+                  sx={{ m: 1, width: '300px', marginBottom: '18px' }}
+                  variant='outlined'
+                >
+                  <InputLabel htmlFor='password-input'>Password</InputLabel>
                   <OutlinedInput
-                    id='outlined-adornment-password'
+                    id='password-input'
                     type={showPassword ? 'text' : 'password'}
                     onChange={(e) => setPassword(e.target.value)}
                     endAdornment={
@@ -105,32 +103,40 @@ const LoginPage = () => {
                   />
                 </FormControl>
 
-                <FormControl sx={{ width: '300px' }} variant='outlined'>
-                  <InputLabel htmlFor='outlined-adornment-password'>
-                    Confirm Password
-                  </InputLabel>
-                  <OutlinedInput
-                    id='outlined-adornment-password'
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    endAdornment={
-                      <InputAdornment position='end'>
-                        <IconButton
-                          aria-label='toggle password visibility'
-                          onClick={handleClickShowConfirmPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge='end'
-                        >
-                          {showConfirmPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                    label='Confirm Password'
-                  />
+                <TextField
+                  id='name-input'
+                  label='Full Name'
+                  sx={{ width: '300px', marginBottom: '20px' }}
+                  onChange={(e) => setFullName(e.target.value)}
+                />
+
+                <br />
+
+                <TextField
+                  id='email-input'
+                  label='Email Address'
+                  sx={{ width: '300px', marginBottom: '20px' }}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+
+                <br />
+
+                <FormControl sx={{ width: '300px' }}>
+                  <InputLabel id='role-select-label'>Role</InputLabel>
+                  <Select
+                    labelId='role-select-label'
+                    id='role-select'
+                    style={{
+                      textAlign: 'left',
+                    }}
+                    value={role}
+                    label='Role'
+                    onChange={(event) => setRole(event.target.value)}
+                  >
+                    <MenuItem value={'USER'}>USER</MenuItem>
+                    <MenuItem value={'EMLPOYEE'}>EMLPOYEE</MenuItem>
+                    <MenuItem value={'ADMIN'}>ADMIN</MenuItem>
+                  </Select>
                 </FormControl>
 
                 <div className='form-outline mb-4'></div>
@@ -145,7 +151,9 @@ const LoginPage = () => {
                   variant='contained'
                   color='success'
                   sx={{ paddingX: '25px', width: '200px' }}
-                  disabled={!username || !password || !confirmPassword}
+                  disabled={
+                    !username || !password || !fullName || !email || !role
+                  }
                   onClick={handleCreateAccount}
                 >
                   <b>Create Account</b>

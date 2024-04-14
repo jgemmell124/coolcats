@@ -26,8 +26,8 @@ const HomePage = () => {
         sx={{ marginTop: '20px', alignItems: 'center' }}
       >
         <h1>
-          Welcome back, {username}. Here&apos;s what your friends have been
-          eating!
+          Welcome back, <span style={{ color: '#A9333A' }}>{username}</span>.
+          Here&apos;s what your friends have been eating!
         </h1>
         <p>
           Feel free to browse around and discover all the awesome things we have
