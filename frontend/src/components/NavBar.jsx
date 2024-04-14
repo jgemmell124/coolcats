@@ -171,9 +171,11 @@ const NavBar = () => {
             Logout
           </MenuItem>
         </Menu>
-        <NavBarButton text='Home' onClickFunction={() => {}} />
-        <NavBarButton text='Sandwiches' onClickFunction={() => {}} />
-        <NavBarButton text='Your Stats' onClickFunction={() => {}} />
+        <NavBarButton text='Home' onClickFunction={() => { }} />
+        <NavBarButton text='Sandwiches' onClickFunction={() => {
+          navigate('/sandwiches');
+        }} />
+        <NavBarButton text='Your Stats' onClickFunction={() => { }} />
         <Button
           variant='contained'
           sx={{

@@ -13,6 +13,7 @@ import Navigation from './components/Navigation';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import { UserContext } from './auth/userContext';
+import Sandwiches from './pages/Sandwiches';
 
 function App() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -42,9 +43,13 @@ function App() {
             path='*'
             element={isAuthenticated ? <MainContent /> : <LoginPage />}
           />
+          <Route
+            path='/sandwiches'
+            element={isAuthenticated ? <Sandwiches /> : <LoginPage />}
+          />
         </Routes>
       </BrowserRouter>
-    </UserContext>
+    </UserContext >
   );
 }
 
