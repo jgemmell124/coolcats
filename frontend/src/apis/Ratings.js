@@ -9,7 +9,7 @@ export const getRatingById = (ratingId) => {
 };
 
 export const getRatingsBySandwich = (sid) => {
-    return authGet(RATING_URL, sid);
+  return authGet(RATING_URL, sid);
 };
 
 export const deleteRating = (ratingId) => {
