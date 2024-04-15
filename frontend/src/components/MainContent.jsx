@@ -7,8 +7,14 @@ import ProfilePage from '../pages/ProfilePage';
 import UserProfilePage from '../pages/UserProfilePage';
 import ResponsiveNavBar from './NavBar';
 import AllUsersPage from '../pages/AllUsersPage';
+import { ROLES_ENUM } from '../utils/constants';
+import { useSelector } from 'react-redux';
+import { selectRole } from '../auth/authSlice';
 
 const MainContent = () => {
+  const userRole = useSelector(selectRole);
+  const isAdmin = userRole === ROLES_ENUM.ADMIN;
+
   return (
     <div
       style={{
@@ -29,7 +35,10 @@ const MainContent = () => {
             <Route path='/profile' element={<ProfilePage />} />
             <Route path='/profile/:uname' element={<UserProfilePage />} />
             <Route path='/search' element={<h1>search page</h1>} />
-            <Route path='/allUsers' element={<AllUsersPage />} />
+            <Route
+              path='/allUsers'
+              element={isAdmin ? <AllUsersPage /> : <NotFound />}
+            />
             <Route path='*' element={<NotFound />} />
           </Routes>
         </Container>
