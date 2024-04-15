@@ -99,7 +99,8 @@ const populateDatabase = async () => {
         sandwich_id: sandwichId,
         user_id: userId,
         rating,
-        description: 'This is a review'
+        title: 'Wow this is great!',
+        description: 'This is a really descriptive review about some sandwich'
       };
       try {
         await ratingDao.createRating(ratingObj);

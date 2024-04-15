@@ -1,58 +1,31 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { logout } from '../apis/Auth';
-import { logoutUser } from '../auth/authSlice';
-import Alert from './Alert';
-import { Stack, Button, Menu, MenuItem } from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
 import AddIcon from '@mui/icons-material/Add';
-import PropTypes from 'prop-types';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { useDispatch, useSelector } from 'react-redux';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { logout } from '../apis/Auth';
+import { logoutUser, selectAuth } from '../auth/authSlice';
 
-const NavBarButton = ({ text, onClickFunction }) => (
-  <Button
-    onClick={onClickFunction}
-    style={{
-      fontFamily: 'Gill Sans',
-      fontSize: '18px',
-    }}
-    sx={{
-      color: '#b2b2b4ff',
-      ':hover': {
-        color: 'white',
-      },
-    }}
-  >
-    {text}
-  </Button>
-);
-
-// Props validation for menu button
-NavBarButton.propTypes = {
-  text: PropTypes.string.isRequired,
-  onClickFunction: PropTypes.func.isRequired,
-};
-
-const NavBar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const [alert, setAlert] = useState(null);
-  const { isAuthenticated } = useSelector((state) => state.auth);
-  const username = useSelector((state) => state.auth?.user?.username);
+const ResponsiveNavBar = () => {
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const { isAuthenticated, user } = useSelector(selectAuth);
+  const username = user?.username;
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleSearch = (event) => {
-    event.preventDefault();
-  };
 
   const handleSignout = async () => {
     try {
@@ -62,131 +35,248 @@ const NavBar = () => {
         navigate('/', { replace: true });
       }
     } catch (err) {
-      setAlert('Failed to sign out');
+      /* setAlert('Failed to sign out'); */
     }
   };
 
-  // dropdown to show profile and signout button
-  const accountDropdown = (
-    <li className='nav-item dropdown'>
-      <button
-        className='nav-link dropdown-toggle'
-        id='dropdownMenuButton'
-        data-bs-toggle='dropdown'
-        aria-haspopup='true'
-        aria-expanded='false'
-        type='button'
-      >
-        Account
-      </button>
-      <ul
-        className='dropdown-menu dropdown-menu-end'
-        aria-labelledby='dropdownMenuButton'
-      >
-        <li>
-          <a className='dropdown-item d-flex' to='/profile'>
-            Profile
-          </a>
-        </li>
-        <li>
-          <button className='dropdown-item' onClick={handleSignout}>
-            Sign Out
-          </button>
-        </li>
-      </ul>
-    </li>
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const AppLogo = () => (
+    <img width='250px' src='/WolliesboxdLogoLight.png' alt={'Wolliesboxd'} />
+  );
+
+  const pages = [
+    { title: 'Home', url: '/' },
+    { title: 'Sandwiches', url: '/sandwiches' },
+    { title: 'Your Stats', url: '/stats', }
+  ];
+
+  const accountMenu = [
+    { title: 'Profile', handler: () => navigate('/profile') },
+    { title: 'Logout', handler: handleSignout },
+  ];
+
+  const profileButton = (
+    isAuthenticated ? (
+      <Box sx={{ flexGrow: 0 }}>
+        <Tooltip title='Open settings'>
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            <Avatar alt='Remy Sharp' src='emptyProfilePic.png' />
+            <Typography 
+              display={{ xs: 'none', sm: 'block' }}
+              color={'white'} 
+              paddingLeft={'8px'}
+              fontFamily={'monospace'}
+            >
+              {`${username ?? 'login'}`}
+              <ArrowDropDownIcon color='white' />
+            </Typography>
+          </IconButton>
+        </Tooltip>
+        <Menu
+          sx={{ mt: '45px' }}
+          id='menu-appbar'
+          anchorEl={anchorElUser}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={Boolean(anchorElUser)}
+          onClose={handleCloseUserMenu}
+        >
+          {accountMenu.map((setting) => (
+            <MenuItem key={setting.title} 
+              onClick={() => {
+                handleCloseUserMenu();
+                setting.handler();
+              }}
+            >
+              <Typography textAlign='center'>{setting.title}</Typography>
+            </MenuItem>
+          ))}
+        </Menu>
+      </Box>
+    )
+      :
+      (
+        <NavLink 
+          to={'/login'} 
+          style={{ color: 'white', textDecoration: 'none' }}
+        >
+          <Button
+            sx={{ my: 2, color: 'white', display: 'block' }}
+
+          >
+            Sign In
+          </Button>
+        </NavLink>
+      )
+  );
+
+  const logSandwichButtonMobile = (
+    <Button
+      variant='contained'
+      onClick={() => {}}
+      sx={{
+        marginTop: '5px',
+        marginLeft: '5px',
+        marginRight: '5px',
+        backgroundColor: '#52bf30',
+        ':hover': { backgroundColor: '#42852d' },
+      }}
+    >
+      <AddIcon />
+      Log Sandwich
+    </Button>
   );
 
   return (
-    <Stack
-      direction='row'
-      spacing={2}
+    <AppBar 
+      position='static'
       sx={{
         backgroundColor: '#090910',
-        height: '75px',
-        justifyContent: 'center',
-        alignItems: 'center',
       }}
     >
-      <a className='navbar-brand' href='#' style={{ marginRight: '10%' }}>
-        <img width='250px' src='WolliesboxdLogoLight.png' alt={'Wolliesboxd'} />
-      </a>
-      <Stack
-        direction='row'
-        spacing={2}
-        sx={{
-          backgroundColor: '#090910',
-          height: '75px',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-        }}
-      >
-        <Button
-          aria-controls={open ? 'basic-menu' : undefined}
-          aria-haspopup='true'
-          aria-expanded={open ? 'true' : undefined}
-          onClick={handleClick}
-          style={{
-            fontFamily: 'Gill Sans',
-            fontSize: '18px',
-          }}
-          sx={{
-            color: open ? 'white' : '#b2b2b4ff',
-            ':hover': {
-              color: 'white',
-            },
-          }}
-        >
-          <img
-            style={{
-              marginRight: '5px',
-              borderRadius: '50%',
-              objectFit: 'cover',
-            }}
-            width='35px'
-            height='35px'
-            src='emptyProfilePic.png'
-            alt={'profilePicture'}
-          />
-          {username}
-          <ArrowDropDownIcon />
-        </Button>
-        <Menu
-          id='basic-menu'
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-        >
-          <MenuItem onClick={handleClose}>Home</MenuItem>
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem
-            onClick={() => {
-              handleSignout();
-              handleClose();
+      <Container maxWidth='lg'>
+        <Toolbar disableGutters>
+          <Typography
+            variant='h6'
+            noWrap
+            component='a'
+            href='#app-bar-with-responsive-menu'
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
             }}
           >
-            Logout
-          </MenuItem>
-        </Menu>
-        <NavBarButton text='Home' onClickFunction={() => {}} />
-        <NavBarButton text='Sandwiches' onClickFunction={() => {}} />
-        <NavBarButton text='Your Stats' onClickFunction={() => {}} />
-        <Button
-          variant='contained'
-          sx={{
-            backgroundColor: '#52bf30',
-            ':hover': { backgroundColor: '#42852d' },
-          }}
-        >
-          <AddIcon />
-          Log Sandwich
-        </Button>
-      </Stack>
-    </Stack>
+            <AppLogo />
+          </Typography>
+          {/* Mobile screen button menu */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size='large'
+              aria-label='account of current user'
+              aria-controls='menu-appbar'
+              aria-haspopup='true'
+              onClick={handleOpenNavMenu}
+              color='inherit'
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id='menu-appbar'
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'block', md: 'none' },
+              }}
+            >
+              {pages.map((page) => (
+                <MenuItem key={page.title} onClick={handleCloseNavMenu}>
+                  <NavLink to={page.url} style={{ color: 'black', textDecoration: 'none' }}>
+                    <Typography textAlign='center'>
+                      {page.title}
+                    </Typography>
+                  </NavLink>
+                </MenuItem>
+              ))}
+              {isAuthenticated && logSandwichButtonMobile}
+            </Menu>
+          </Box>
+          {/* Mobile screen logo */}
+          <Typography
+            variant='h5'
+            noWrap
+            component='a'
+            href='#app-bar-with-responsive-menu'
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              flexGrow: 1,
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            <AppLogo />
+          </Typography>
+          {/* Desktop screen button menu */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page) => (
+              <NavLink 
+                key={page.title}
+                to={page.url} 
+                style={{ color: 'white', textDecoration: 'none' }}
+              >
+                <Button
+                  key={page.title}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+
+                >
+                  {page.title}
+                </Button>
+              </NavLink>
+            ))}
+            {isAuthenticated &&
+              <Button
+                variant='contained'
+                onClick={handleCloseNavMenu}
+                sx={{ 
+                  my: 2,
+                  display: 'block',
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  backgroundColor: '#52bf30',
+                  ':hover': { backgroundColor: '#42852d' },
+                }}
+              >
+                <AddIcon />
+                Log Sandwich
+              </Button>
+            }
+          </Box>
+          {/* profile button */}
+          {profileButton}
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 };
 
-export default NavBar;
+export default ResponsiveNavBar;
