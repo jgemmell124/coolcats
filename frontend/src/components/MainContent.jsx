@@ -18,16 +18,16 @@ const MainContent = () => {
   return (
     <div
       style={{
-        overflow: 'hidden',
+        overflow: 'auto',
         backgroundImage: 'url(/background.jpeg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        height: '100vh',
+        height: '100%',
         width: '100%',
       }}
     >
       <ResponsiveNavBar />
-      <div style={{ paddingTop: '10px', overflow: 'scroll', height: '100%' }}>
+      <div style={{ marginTop: '100px' }}>
         <Container maxWidth='lg'>
           <Routes>
             <Route path='/' element={<HomePage />} />

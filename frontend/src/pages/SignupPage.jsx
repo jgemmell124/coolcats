@@ -38,6 +38,13 @@ const LoginPage = () => {
     createUser({ username, password, email, role, name: fullName })
       .then(() => {
         setSuccess('Account created successfully!');
+
+        // Clear form fields
+        setUsername('');
+        setPassword('');
+        setEmail('');
+        setFullName('');
+        setRole('');
       })
       .catch((err) => {
         setError(err?.response?.data ?? err.message);
@@ -72,6 +79,7 @@ const LoginPage = () => {
                 <TextField
                   id='username-input'
                   label='Username'
+                  value={username}
                   sx={{ width: '300px', marginBottom: '10px' }}
                   onChange={(e) => setUsername(e.target.value)}
                 />
@@ -86,6 +94,7 @@ const LoginPage = () => {
                   <OutlinedInput
                     id='password-input'
                     type={showPassword ? 'text' : 'password'}
+                    value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     endAdornment={
                       <InputAdornment position='end'>
@@ -106,6 +115,7 @@ const LoginPage = () => {
                 <TextField
                   id='name-input'
                   label='Full Name'
+                  value={fullName}
                   sx={{ width: '300px', marginBottom: '20px' }}
                   onChange={(e) => setFullName(e.target.value)}
                 />
@@ -115,6 +125,7 @@ const LoginPage = () => {
                 <TextField
                   id='email-input'
                   label='Email Address'
+                  value={email}
                   sx={{ width: '300px', marginBottom: '20px' }}
                   onChange={(e) => setEmail(e.target.value)}
                 />

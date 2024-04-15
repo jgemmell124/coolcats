@@ -12,6 +12,8 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
+import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
@@ -133,17 +135,13 @@ function EnhancedTableToolbar(props) {
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
         ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity
-            ),
+          bgcolor: (theme) => alpha(theme.palette.primary.main),
         }),
       }}
     >
       {numSelected > 0 ? (
         <Typography
-          sx={{ flex: '1 1 100%' }}
+          sx={{ flex: '1 1 100%', fontWeight: 'bold', fontSize: '20px' }}
           color='inherit'
           variant='subtitle1'
           component='div'
@@ -256,24 +254,26 @@ export default function AllUsersPage() {
   }, []);
 
   return (
-    <Box
+    <Container
       sx={{
-        width: '80%',
+        width: '100%',
+        marginLeft: 'auto',
+        overflowX: 'auto',
+        marginTop: '20px',
+        marginBottom: '20px',
         backgroundColor: 'rgba(248, 223, 139, 0.4)',
-        margin: 'auto',
-        marginTop: '50px',
         borderRadius: '10px',
         boxShadow: '0px 0px 10px 1px black',
       }}
     >
-      <EnhancedTableToolbar numSelected={selected.length} />
-      <TableContainer>
+      <Stack sx={{ alignItems: 'left' }}>
+        <EnhancedTableToolbar numSelected={selected.length} />
+
         <Table
           sx={{
             minWidth: 750,
           }}
           aria-labelledby='tableTitle'
-          size={'medium'}
         >
           <EnhancedTableHead
             numSelected={selected.length}
@@ -351,24 +351,36 @@ export default function AllUsersPage() {
             )}
           </TableBody>
         </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 50]}
-        component='div'
-        count={users.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        sx={{}}
-      />
-      {showEditModal && (
-        <EditUserModal
-          user={userToEdit}
-          open={showEditModal}
-          setShowEditModal={setShowEditModal}
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 50]}
+          component='div'
+          count={users.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          sx={{
+            display: 'flex',
+            justifyContent: 'right',
+            alignItems: 'center',
+            alignContent: 'center',
+            margin: '0px',
+            '& .MuiTablePagination-selectLabel': {
+              margin: '0px',
+            },
+            '& .MuiTablePagination-displayedRows': {
+              margin: '0px',
+            },
+          }}
         />
-      )}
-    </Box>
+        {showEditModal && (
+          <EditUserModal
+            user={userToEdit}
+            open={showEditModal}
+            setShowEditModal={setShowEditModal}
+          />
+        )}
+      </Stack>
+    </Container>
   );
 }
