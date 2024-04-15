@@ -4,26 +4,22 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import {
   Stack,
-  Box,
   Button,
   TextField,
   InputLabel,
-  OutlinedInput,
-  InputAdornment,
   Select,
   MenuItem,
 } from '@mui/material';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const EditUserModal = ({ open, user, setShowEditModal }) => {
   const [role, setRole] = React.useState(user.role);
   const [email, setEmail] = React.useState(user.email);
   const [fullName, setFullName] = React.useState(user.name);
   const [username, setUsername] = React.useState(user.username);
+
+  // const [error, setError] = React.useState(null);
 
   const handleClose = () => {
     setShowEditModal(false);
@@ -97,6 +93,8 @@ const EditUserModal = ({ open, user, setShowEditModal }) => {
           </Select>
         </FormControl>
 
+        {/* {error && <div className='alert alert-danger'>{error}</div>} */}
+
         <Button
           variant='contained'
           color='success'
@@ -116,81 +114,6 @@ const EditUserModal = ({ open, user, setShowEditModal }) => {
     </Dialog>
   );
 };
-
-// import React, { useState } from 'react';
-// import Dialog from '@mui/material/Dialog';
-// import DialogTitle from '@mui/material/DialogTitle';
-// import {
-//   DialogContent,
-//   Grid,
-//   InputAdornment,
-//   InputLabel,
-//   OutlinedInput,
-//   TextField,
-// } from '@mui/material';
-// import PropTypes from 'prop-types';
-
-// const EditUserModal = ({ open, user }) => {
-//   const [name, setName] = useState('');
-//   const [price, setPrice] = useState(0);
-//   const [description, setDescription] = useState('');
-//   const [ingredients, setIngredients] = useState([]);
-
-//   return (
-//     <Dialog open={open} fullWidth maxWidth='sm'>
-//       <DialogTitle>Edit User {user.username}</DialogTitle>
-//       <DialogContent>
-//         <Grid container spacing={2}>
-//           <Grid item sm={8}>
-//             <TextField
-//               fullWidth
-//               required
-//               id='name'
-//               placeholder='Name'
-//               onChange={(e) => setName(e.target.value)}
-//             />
-//           </Grid>
-//           <Grid item sm={4}>
-//             <OutlinedInput
-//               fullWidth
-//               id='outlined-adornment-amount'
-//               startAdornment={
-//                 <InputAdornment position='start'>$</InputAdornment>
-//               }
-//               placeholder='Price'
-//               onChange={(e) => setPrice(e.target.value)}
-//             />
-//           </Grid>
-//           <Grid item sm={12}>
-//             <TextField
-//               fullWidth
-//               required
-//               multiline
-//               rows={3}
-//               placeholder='Description'
-//               onChange={(e) => setDescription(e.target.value)}
-//             />
-//           </Grid>
-//           <Grid item sm={12}>
-//             <h6>Ingredients</h6>
-//           </Grid>
-//         </Grid>
-//       </DialogContent>
-//     </Dialog>
-//   );
-// };
-
-// const RenderIngredients = ({ ingredients }) => {
-//   return (
-//     <div>
-//       {ingredients.map((ingredient) => {
-//         {
-//           ingredient;
-//         }
-//       })}
-//     </div>
-//   );
-// };
 
 EditUserModal.propTypes = {
   open: PropTypes.bool,
