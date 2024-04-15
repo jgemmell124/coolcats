@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 const HomePage = () => {
   const [users, setUsers] = useState([]);
-  const username = useSelector((state) => state.auth.user.username);
+  const username = useSelector((state) => state.auth?.user?.username);
   const [sandwiches, setSandwiches] = useState([]);
 
   useEffect(() => {

@@ -37,7 +37,7 @@ const NavBar = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [alert, setAlert] = useState(null);
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const username = useSelector((state) => state.auth.user.username);
+  const username = useSelector((state) => state.auth?.user?.username);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
