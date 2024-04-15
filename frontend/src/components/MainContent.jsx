@@ -3,8 +3,8 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from '../pages/Home';
 import NotFound from '../pages/NotFound';
-import ProfilePage from '../pages/Profile';
-import UserProfilePage from '../pages/UserProfile';
+import ProfilePage from '../pages/ProfilePage';
+import UserProfilePage from '../pages/UserProfilePage';
 import ResponsiveNavBar from './NavBar';
 
 const MainContent = () => {

@@ -117,7 +117,17 @@ const ResponsiveNavBar = () => {
     )
       :
       (
-        <Button>Sign In</Button>
+        <NavLink 
+          to={'/login'} 
+          style={{ color: 'white', textDecoration: 'none' }}
+        >
+          <Button
+            sx={{ my: 2, color: 'white', display: 'block' }}
+
+          >
+            Sign In
+          </Button>
+        </NavLink>
       )
   );
 
