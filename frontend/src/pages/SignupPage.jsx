@@ -79,7 +79,7 @@ const LoginPage = () => {
                 <br />
 
                 <FormControl
-                  sx={{ m: 1, width: '300px', marginBottom: '18px' }}
+                  sx={{ mt: 1, width: '300px', marginBottom: '18px' }}
                   variant='outlined'
                 >
                   <InputLabel htmlFor='password-input'>Password</InputLabel>

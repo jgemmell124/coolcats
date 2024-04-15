@@ -75,7 +75,7 @@ const LoginPage = () => {
 
                 <br />
 
-                <FormControl sx={{ m: 1, width: '300px' }} variant='outlined'>
+                <FormControl sx={{ mt: 1.5, width: '300px' }} variant='outlined'>
                   <InputLabel htmlFor='outlined-adornment-password'>
                     Password
                   </InputLabel>
