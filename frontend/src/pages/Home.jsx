@@ -4,7 +4,6 @@ import { getAllUsers } from '../apis/Users';
 import SandwichCard from '../components/SandwichCard';
 import { List, ListItem, Grid } from '@mui/material';
 import Footer from '../components/Footer';
-import { Container, Stack } from '@mui/material';
 import { useSelector } from 'react-redux';
 
 const HomePage = () => {
@@ -25,7 +24,11 @@ const HomePage = () => {
     <div className='container'>
       <Grid container spacing={2}>
         <Grid xs={9}>
-          <h1>
+          <h1
+            style={{
+              paddingTop: '1rem',
+            }}
+          >
             Welcome back, <span style={{ color: '#A9333A' }}>{username}</span>.
             Here&apos;s what your friends have been eating!
           </h1>
@@ -36,10 +39,10 @@ const HomePage = () => {
           <h2
             style={{
               position: 'relative',
-              bottom: '-8rem',
+              bottom: '-2rem',
             }}
           >
-            Locations
+            Wollies Locations
           </h2>
           <iframe
             width='50%'
@@ -49,11 +52,14 @@ const HomePage = () => {
               float: 'left',
               paddingTop: '1rem',
               position: 'relative',
-              bottom: '-10rem',
+              bottom: '-3rem',
             }}
             loading='lazy'
             allowfullscreen
-            src='https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ3V9Axxh644kRYpjOb4LAAPg&key=AIzaSyBCgHzQFq8djSJDNbhlzBqjj_x49SI58yw'
+            src={
+              'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ3V9Axxh644kRYpjOb4LAAPg&key=' +
+              process.env.REACT_APP_GOOGLE_API_KEY
+            }
           ></iframe>
           <iframe
             width='50%'
@@ -63,44 +69,46 @@ const HomePage = () => {
               float: 'right',
               paddingTop: '1rem',
               position: 'relative',
-              bottom: '-10rem',
+              bottom: '-3rem',
             }}
             loading='lazy'
             allowfullscreen
-            src='https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ07NCiCF644kRokxOOSJwRuc&key=AIzaSyBCgHzQFq8djSJDNbhlzBqjj_x49SI58yw'
+            src={
+              'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ07NCiCF644kRokxOOSJwRuc&key=' +
+              process.env.REACT_APP_GOOGLE_API_KEY
+            }
           ></iframe>
         </Grid>
         <Grid xs={2}>
-          <div style={{ padding: '2rem' }}>
+          <div style={{ padding: '1rem' }}>
             <h2>Featured Sandwiches</h2>
             <List
               sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
             >
-              {[1, 2, 3, 4, 5, 6, 7].map(
-                (
-                  value //replace this later
-                ) => (
-                  <ListItem key={value} disableGutters>
-                    <img
-                      style={{ width: '5rem', height: '5rem' }}
-                      src='../images/example_sandwich.jpeg'
-                      alt='sandwich'
-                    />
-                    <a style={{ paddingLeft: '1rem', fontSize: '1.5rem' }}>
-                      sandwich name
-                    </a>
-                  </ListItem>
-                )
-              )}
+              {sandwiches.slice(0, 5).map((s) => (
+                <ListItem key={s._id} disableGutters>
+                  <img
+                    style={{ width: '5rem', height: '5rem' }}
+                    src='../images/example_sandwich.jpeg'
+                    alt='sandwich'
+                  />
+                  <a style={{ paddingLeft: '1rem', fontSize: '1rem' }}>
+                    s.name
+                  </a>
+                  <p>{s.price}</p>
+                  <p>{s.description}</p>
+                </ListItem>
+              ))}
             </List>
           </div>
         </Grid>
       </Grid>
+      <h2>Recent Reviews</h2>
       <div
-        style={{ backgroundColor: 'gray' }}
-        id='carouselExampleControls'
-        className='carousel slide'
-        data-ride='carousel'
+        style={{ backgroundImage: '../background.jpeg' }}
+        id='carouselExampleDark'
+        className='carousel carousel-dark slide'
+        data-bs-ride='carousel'
       >
         <div className='carousel-inner'>
           <div
@@ -116,32 +124,35 @@ const HomePage = () => {
             <SandwichCard></SandwichCard>
           </div>
         </div>
-        <a className='carousel-control-prev' role='button' data-slide='prev'>
+        <button
+          className='carousel-control-prev'
+          type='button'
+          data-bs-target='#carouselExampleDark'
+          data-bs-slide='prev'
+        >
           <span
             className='carousel-control-prev-icon'
             aria-hidden='true'
           ></span>
-          <span className='sr-only'>Previous</span>
-        </a>
-        <a className='carousel-control-next' role='button' data-slide='next'>
+          <span className='visually-hidden'>Previous</span>
+        </button>
+        <button
+          className='carousel-control-next'
+          type='button'
+          data-bs-target='#carouselExampleDark'
+          data-bs-slide='next'
+        >
           <span
             className='carousel-control-next-icon'
             aria-hidden='true'
           ></span>
-          <span className='sr-only'>Next</span>
-        </a>
+          <span className='visually-hidden'>Next</span>
+        </button>
       </div>
       {users.map((user) => (
         <div key={user._id}>
           <h2>{user.username}</h2>
           <p>{user._id}</p>
-        </div>
-      ))}
-      {sandwiches.map((s) => (
-        <div key={s._id}>
-          <h2>{s.name}</h2>
-          <p>{s.price}</p>
-          <p>{s.description}</p>
         </div>
       ))}
       <Footer />
