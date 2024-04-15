@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { getAllSandwiches } from '../apis/Sandwiches';
 import { getAllUsers } from '../apis/Users';
-import SandwichCard from '../components/SandwichCard';
+import RatingCard from '../components/RatingCard';
 import { List, ListItem, Grid } from '@mui/material';
 import Footer from '../components/Footer';
 import { useSelector } from 'react-redux';
+import { getAllRatings } from '../apis/Ratings';
 
 const HomePage = () => {
   const [users, setUsers] = useState([]);
   const username = useSelector((state) => state.auth?.user?.username);
   const [sandwiches, setSandwiches] = useState([]);
+  const [ratings, setRatings] = useState([]);
 
   useEffect(() => {
     getAllUsers()
@@ -18,6 +20,10 @@ const HomePage = () => {
 
     getAllSandwiches()
       .then((res) => setSandwiches(res.sandwiches))
+      .catch();
+
+    getAllRatings()
+      .then((res) => setRatings(res.ratings))
       .catch();
   }, []);
   return (
@@ -80,18 +86,19 @@ const HomePage = () => {
           ></iframe>
         </Grid>
         <Grid xs={2}>
-          <div style={{ padding: '1rem' }}>
+          <div
+            style={{ padding: '1rem', backgroundImage: '../background.jpeg' }}
+          >
             <h2>Featured Sandwiches</h2>
             <List
               sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
             >
               {sandwiches.slice(0, 5).map((s) => (
-                <ListItem key={s._id} disableGutters>
-                  <img
-                    style={{ width: '5rem', height: '5rem' }}
-                    src='../images/example_sandwich.jpeg'
-                    alt='sandwich'
-                  />
+                <ListItem
+                  sx={{ backgroundImage: '../background.jpeg' }}
+                  key={s._id}
+                  disableGutters
+                >
                   <a style={{ paddingLeft: '1rem', fontSize: '1rem' }}>
                     s.name
                   </a>
@@ -115,13 +122,19 @@ const HomePage = () => {
             className='carousel-item active'
             style={{ float: 'center', left: '25%' }}
           >
-            <SandwichCard></SandwichCard>
+            <RatingCard rating={ratings} />
           </div>
-          <div className='carousel-item' style={{ float: 'center' }}>
-            <SandwichCard></SandwichCard>
+          <div
+            className='carousel-item'
+            style={{ float: 'center', left: '25%' }}
+          >
+            <RatingCard rating={ratings} />
           </div>
-          <div className='carousel-item' style={{ float: 'center' }}>
-            <SandwichCard></SandwichCard>
+          <div
+            className='carousel-item'
+            style={{ float: 'center', left: '25%' }}
+          >
+            <RatingCard rating={ratings} />
           </div>
         </div>
         <button

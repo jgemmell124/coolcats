@@ -4,8 +4,9 @@ import { Avatar } from '@mui/material';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import PropTypes from 'prop-types';
 
-const SandwichCard = () => { //TODO: put rating object as parameter and then set fields to param fields, and add edit button
+const RatingCard = ({ rating }) => {
   return (
     <div className='card' style={{ width: '50%' }}>
       <div className='card-body'>
@@ -23,7 +24,7 @@ const SandwichCard = () => { //TODO: put rating object as parameter and then set
                   position: 'absolute',
                 }}
               >
-                username placeholder
+                {rating.user_id}
               </h5>
             </div>
           </Row>
@@ -35,7 +36,7 @@ const SandwichCard = () => { //TODO: put rating object as parameter and then set
                 float: 'left',
               }}
               name='read-only size-medium'
-              value={2}
+              value={rating.rating}
               readOnly
             />
           </Row>
@@ -46,7 +47,7 @@ const SandwichCard = () => { //TODO: put rating object as parameter and then set
               paddingTop: '0.3rem',
             }}
           >
-            title of review
+            {rating.title}
           </h5>
           <p
             className='card-text'
@@ -56,13 +57,7 @@ const SandwichCard = () => { //TODO: put rating object as parameter and then set
               textAlign: 'left',
             }}
           >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
+            {rating.comment}
           </p>
           <Row>
             <Col xs>
@@ -83,4 +78,9 @@ const SandwichCard = () => { //TODO: put rating object as parameter and then set
     </div>
   );
 };
-export default SandwichCard;
+
+RatingCard.propTypes = {
+  rating: PropTypes.object,
+};
+
+export default RatingCard;
