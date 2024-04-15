@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-
 const createRequest = (req) => {
   return new Promise((resolve, reject) => {
     req

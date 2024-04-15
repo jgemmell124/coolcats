@@ -4,9 +4,12 @@ import { getAllUsers } from '../apis/Users';
 import SandwichCard from '../components/SandwichCard';
 import { List, ListItem, Grid } from '@mui/material';
 import Footer from '../components/Footer';
+import { Container, Stack } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 const HomePage = () => {
   const [users, setUsers] = useState([]);
+  const username = useSelector((state) => state.auth?.user?.username);
   const [sandwiches, setSandwiches] = useState([]);
 
   useEffect(() => {
@@ -22,8 +25,14 @@ const HomePage = () => {
     <div className='container'>
       <Grid container spacing={2}>
         <Grid xs={9}>
-          <h1 style={{ paddingTop: '2rem' }}>Website title goes here</h1>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+          <h1>
+            Welcome back, <span style={{ color: '#A9333A' }}>{username}</span>.
+            Here&apos;s what your friends have been eating!
+          </h1>
+          <p>
+            Feel free to browse around and discover all the awesome things we
+            have to offer.
+          </p>{' '}
           <h2
             style={{
               position: 'relative',
