@@ -20,10 +20,6 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const EditUserModal = ({ open, user, setShowEditModal }) => {
-  // Make an initial copy of the user object
-  const initialUserInfo = { ...user };
-  console.log(`opened edit user modal with user ${user}`);
-
   const [role, setRole] = React.useState(user.role);
   const [email, setEmail] = React.useState(user.email);
   const [fullName, setFullName] = React.useState(user.name);
@@ -39,6 +35,15 @@ const EditUserModal = ({ open, user, setShowEditModal }) => {
     setFullName(user.name);
     setUsername(user.username);
   }, [user]);
+
+  const noEditsApplied = () => {
+    return (
+      role === user.role &&
+      email === user.email &&
+      fullName === user.name &&
+      username === user.username
+    );
+  };
 
   return (
     <Dialog fullWidth maxWidth='xs' onClose={handleClose} open={open}>
@@ -96,12 +101,16 @@ const EditUserModal = ({ open, user, setShowEditModal }) => {
           variant='contained'
           color='success'
           sx={{ marginBottom: '25px' }}
+          disabled={
+            noEditsApplied() || !username || !email || !fullName || !role
+          }
+          onClick={() => {
+            // TODO: actually save the changes -- maybe show a response message on success/failure
+            // TODO: maybe add a tooltip for disabled button that says you must change at least one field
+            setShowEditModal(false);
+          }}
         >
-          <SaveAltIcon
-            sx={{ marginRight: '5px' }}
-            disabled={initialUserInfo === user}
-          />{' '}
-          Save Changes
+          <SaveAltIcon sx={{ marginRight: '5px' }} /> Save Changes
         </Button>
       </Stack>
     </Dialog>

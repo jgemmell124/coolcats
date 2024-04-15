@@ -244,7 +244,7 @@ export default function AllUsersPage() {
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage]
+    [users, order, orderBy, page, rowsPerPage]
   );
 
   useEffect(() => {
