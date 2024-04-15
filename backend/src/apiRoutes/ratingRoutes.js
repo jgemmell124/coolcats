@@ -5,18 +5,32 @@ import * as userModel from '../models/userModel.js';
 import * as ratingDao from '../daos/ratingDao.js';
 import ratingModel from '../models/ratingModel.js';
 import { getUserSession } from '../utils/session.js';
+import { getUserByUsername } from '../daos/userDao.js';
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const { sandwichId, userId } = req.query;
+  const { sid, username, uid } = req.query;
   const filter = {};
-  if (sandwichId) {
-    filter.sandwich_id = sandwichId;
+  if (sid) {
+    filter.sandwich_id = sid;
   }
-  if (userId) {
-    filter.user_id = userId;
+
+  if (uid) {
+    filter.user_id = uid;
   }
+
+  if (username) {
+    try {
+      const user = await getUserByUsername(username);
+      if (user) {
+        filter.user_id = user._id;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   try {
     const ratings = await ratingModel.find(filter);
     return res.json({ ratings, count: ratings.length }).status(200);

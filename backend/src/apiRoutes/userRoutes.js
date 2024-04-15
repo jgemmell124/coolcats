@@ -1,8 +1,8 @@
 import express from 'express';
 import userModel from '../models/userModel.js';
-import { ROLES_ENUM  } from '../utils/constants.js';
+import { ROLES_ENUM } from '../utils/constants.js';
 import * as userDao from '../daos/userDao.js';
-import { getUserSession } from '../utils/session.js';
+import { getUserSession, setUserSession } from '../utils/session.js';
 
 const router = express.Router();
 
@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
     Object.assign(baseProjection, { name: 0, email: 0, role: 0 });
   } else if (session.role === ROLES_ENUM.EMPLOYEE) {
     filter.role = {
-      $in: [ROLES_ENUM.USER, ROLES_ENUM.EMPLOYEE]
+      $in: [ROLES_ENUM.USER, ROLES_ENUM.EMPLOYEE],
     };
     Object.assign(baseProjection, { name: 0, email: 0 });
   } else if (session.role !== ROLES_ENUM.ADMIN) {
@@ -43,17 +43,15 @@ router.get('/', async (req, res) => {
     console.log(err);
     return res.status(400).send('Failed to get users');
   }
-
 });
-
 
 router.post('/', async (req, res) => {
   // only admin can create an account (for now)
-  const userSession = getUserSession(req);
+  // const userSession = getUserSession(req);
 
-  if (userSession?.role !== ROLES_ENUM.ADMIN) {
-    return res.sendStatus(401);
-  };
+  // if (userSession?.role !== ROLES_ENUM.ADMIN) {
+  //   return res.sendStatus(401);
+  // };
 
   const { username, email, password, name, role } = req.body;
 
@@ -88,7 +86,7 @@ router.post('/', async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(400).send('Failed to create user');
-  };
+  }
 });
 
 router.get('/:username', async (req, res) => {
@@ -107,17 +105,19 @@ router.get('/:username', async (req, res) => {
     }
 
     const userInfo = user.toObject();
+    delete userInfo?.password;
     const userSession = getUserSession(req);
 
-    if (userSession?.role === ROLES_ENUM.ADMIN) {
+    if (userSession?.role === ROLES_ENUM.ADMIN || userSession?.username === username) {
       // admin can see all user info
-      return res.json(userSession).status(200);
-    } else if (userSession?.username === username) {
       // user can see their own info
+      // return info without password
       return res.json(userInfo).status(200);
     } else {
       // other users can only see username and _id
-      return res.json({ username: userInfo.username, _id: userInfo._id }).status(200);
+      return res
+        .status(200)
+        .json({ username: userInfo.username, _id: userInfo._id, name: userInfo.name });
     }
   } catch (err) {
     console.log(err);
@@ -133,7 +133,10 @@ router.put('/:username', async (req, res) => {
 
   const userSession = getUserSession(req);
 
-  if (!userSession || (userSession.username !== username && userSession.role !== ROLES_ENUM.ADMIN)) {
+  if (
+    !userSession ||
+    (userSession.username !== username && userSession.role !== ROLES_ENUM.ADMIN)
+  ) {
     return res.status(403).send('Unauthorized');
   }
 
@@ -146,8 +149,19 @@ router.put('/:username', async (req, res) => {
         updateParams.role = role;
       }
     }
-    const updatedUser = await userDao.updateUser(username, updateParams);
-    return res.json(updatedUser).status(201);
+    await userDao.updateUser(username, updateParams);
+    const updatedUser = await userDao.getUserByUsername(updateParams.username ?? username);
+
+    // if the user is updating their own account, update the session
+    if (userSession.username === username) {
+      const userInfo = setUserSession(req, updatedUser);
+      return res.json(userInfo).status(200);
+    } else {
+      const user = await userDao.getUserByUsername(updateParams.username ?? username);
+      const userInfo = user?.toObject();
+      delete userInfo?.password;
+      return res.json(userInfo).status(200);
+    }
   } catch (err) {
     console.log(err);
     return res.status(400).send('Failed to update user');
@@ -160,7 +174,10 @@ router.delete('/:username', async (req, res) => {
   const { username } = req.params;
   const userSession = getUserSession(req);
 
-  if (!userSession || (userSession.username !== username && userSession.role !== ROLES_ENUM.ADMIN)) {
+  if (
+    !userSession ||
+    (userSession.username !== username && userSession.role !== ROLES_ENUM.ADMIN)
+  ) {
     return res.status(403).send('Unauthorized');
   }
   try {

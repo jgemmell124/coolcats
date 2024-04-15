@@ -22,7 +22,7 @@ const Alert = ({ alert, setAlert }) => {
         position: 'fixed', 
         right: '50vw', 
         top: '.5vh',
-        zIndex: '1000', 
+        zIndex: '10001', 
         transform: 'translate(50%, 50%)'
       }}
       className='alert alert-danger'>

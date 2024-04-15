@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import session from 'express-session';
 import apiRoutes from './apiRoutes/index.js';
 import populateDatabase from './utils/startup.js';
+import 'dotenv/config';
 
 // NOTE: make sure your node env is set to 'development' locally
 
@@ -22,7 +23,6 @@ if (process.env.NODE_ENV === 'development') {
 const app = express();
 
 // middleware
-
 
 app.use(
   cors({
@@ -51,7 +51,7 @@ app.use(express.json());
 
 // log requests
 app.use((req, _res, next) => {
-  const info = `[${new Date().toISOString()}] ${req.method} ${req.path} USER: ${req.session['user']?._id} BODY: ${JSON.stringify(req.body)}`;
+  const info = `[${new Date().toISOString()}] ${req.method} ${req.originalUrl} USER: ${req.session['user']?._id} BODY: ${JSON.stringify(req.body)}`;
   console.info(info.substring(0, 1023));
   next();
 });
@@ -60,7 +60,12 @@ app.use((req, _res, next) => {
 app.use((req, res, next) => {
   const oldSend = res.send;
   res.send = function (data) {
-    console.info(`[${new Date().toISOString()}] Response: ${req.method} ${req.originalUrl} DATA: ${data}`.substring(0, 1023));
+    console.info(
+      `[${new Date().toISOString()}] Response: ${req.method} ${req.originalUrl} DATA: ${data}`.substring(
+        0,
+        1023
+      )
+    );
     res.send = oldSend;
     return res.send(data);
   };
