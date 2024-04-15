@@ -134,7 +134,7 @@ const LoginPage = () => {
                     onChange={(event) => setRole(event.target.value)}
                   >
                     <MenuItem value={'USER'}>USER</MenuItem>
-                    <MenuItem value={'EMLPOYEE'}>EMLPOYEE</MenuItem>
+                    <MenuItem value={'EMPLOYEE'}>EMLPOYEE</MenuItem>
                     <MenuItem value={'ADMIN'}>ADMIN</MenuItem>
                   </Select>
                 </FormControl>

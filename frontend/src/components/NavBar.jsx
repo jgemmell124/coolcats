@@ -17,15 +17,38 @@ import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { logout } from '../apis/Auth';
 import { logoutUser, selectAuth } from '../auth/authSlice';
+import { ROLES_ENUM } from '../utils/constants';
+import { selectRole } from '../auth/authSlice';
 
 const ResponsiveNavBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const { isAuthenticated, user } = useSelector(selectAuth);
   const username = user?.username;
-  
+  const userRole = useSelector(selectRole) ?? 'GUEST';
+  console.log(`userRole = ${userRole}`);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const userHasAccess = (highestAccess) => {
+    console.log(
+      `in userHasAccess with highestAccess = ${highestAccess} and userRole = ${userRole}`
+    );
+
+    if (highestAccess === ROLES_ENUM.GUEST) return true;
+    if (highestAccess === ROLES_ENUM.USER && userRole !== ROLES_ENUM.GUEST)
+      return true;
+    if (
+      highestAccess === ROLES_ENUM.EMPLOYEE &&
+      (userRole === ROLES_ENUM.EMPLOYEE || userRole === ROLES_ENUM.ADMIN)
+    )
+      return true;
+    if (highestAccess === ROLES_ENUM.ADMIN && userRole === ROLES_ENUM.ADMIN)
+      return true;
+    console.log(`returning false for ${highestAccess}`);
+    return false;
+  };
 
   const handleSignout = async () => {
     try {
@@ -59,76 +82,70 @@ const ResponsiveNavBar = () => {
   );
 
   const pages = [
-    { title: 'Home', url: '/' },
-    { title: 'Sandwiches', url: '/sandwiches' },
-    { title: 'Your Stats', url: '/stats', }
-  ];
+    { title: 'Home', url: '/', highestRole: ROLES_ENUM.GUEST },
+    {
+      title: 'Sandwiches',
+      url: '/sandwiches',
+      highestRole: ROLES_ENUM.EMPLOYEE,
+    },
+    { title: 'Your Stats', url: '/stats', highestRole: ROLES_ENUM.USER },
+    { title: 'All Users', url: '/allUsers', highestRole: ROLES_ENUM.ADMIN },
+  ].filter((page) => userHasAccess(page.highestRole));
 
   const accountMenu = [
     { title: 'Profile', handler: () => navigate('/profile') },
     { title: 'Logout', handler: handleSignout },
   ];
 
-  const profileButton = (
-    isAuthenticated ? (
-      <Box sx={{ flexGrow: 0 }}>
-        <Tooltip title='Open settings'>
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-            <Avatar alt='Remy Sharp' src='emptyProfilePic.png' />
-            <Typography 
-              display={{ xs: 'none', sm: 'block' }}
-              color={'white'} 
-              paddingLeft={'8px'}
-              fontFamily={'monospace'}
-            >
-              {`${username ?? 'login'}`}
-              <ArrowDropDownIcon color='white' />
-            </Typography>
-          </IconButton>
-        </Tooltip>
-        <Menu
-          sx={{ mt: '45px' }}
-          id='menu-appbar'
-          anchorEl={anchorElUser}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          open={Boolean(anchorElUser)}
-          onClose={handleCloseUserMenu}
-        >
-          {accountMenu.map((setting) => (
-            <MenuItem key={setting.title} 
-              onClick={() => {
-                handleCloseUserMenu();
-                setting.handler();
-              }}
-            >
-              <Typography textAlign='center'>{setting.title}</Typography>
-            </MenuItem>
-          ))}
-        </Menu>
-      </Box>
-    )
-      :
-      (
-        <NavLink 
-          to={'/login'} 
-          style={{ color: 'white', textDecoration: 'none' }}
-        >
-          <Button
-            sx={{ my: 2, color: 'white', display: 'block' }}
-
+  const profileButton = isAuthenticated ? (
+    <Box sx={{ flexGrow: 0 }}>
+      <Tooltip title='Open settings'>
+        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+          <Avatar alt='Remy Sharp' src='emptyProfilePic.png' />
+          <Typography
+            display={{ xs: 'none', sm: 'block' }}
+            color={'white'}
+            paddingLeft={'8px'}
+            fontFamily={'monospace'}
           >
-            Sign In
-          </Button>
-        </NavLink>
-      )
+            {`${username ?? 'login'}`}
+            <ArrowDropDownIcon color='white' />
+          </Typography>
+        </IconButton>
+      </Tooltip>
+      <Menu
+        sx={{ mt: '45px' }}
+        id='menu-appbar'
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseUserMenu}
+      >
+        {accountMenu.map((setting) => (
+          <MenuItem
+            key={setting.title}
+            onClick={() => {
+              handleCloseUserMenu();
+              setting.handler();
+            }}
+          >
+            <Typography textAlign='center'>{setting.title}</Typography>
+          </MenuItem>
+        ))}
+      </Menu>
+    </Box>
+  ) : (
+    <NavLink to={'/login'} style={{ color: 'white', textDecoration: 'none' }}>
+      <Button sx={{ my: 2, color: 'white', display: 'block' }}>Sign In</Button>
+    </NavLink>
   );
 
   const logSandwichButtonMobile = (
@@ -149,7 +166,7 @@ const ResponsiveNavBar = () => {
   );
 
   return (
-    <AppBar 
+    <AppBar
       position='static'
       sx={{
         backgroundColor: '#090910',
@@ -206,10 +223,11 @@ const ResponsiveNavBar = () => {
             >
               {pages.map((page) => (
                 <MenuItem key={page.title} onClick={handleCloseNavMenu}>
-                  <NavLink to={page.url} style={{ color: 'black', textDecoration: 'none' }}>
-                    <Typography textAlign='center'>
-                      {page.title}
-                    </Typography>
+                  <NavLink
+                    to={page.url}
+                    style={{ color: 'black', textDecoration: 'none' }}
+                  >
+                    <Typography textAlign='center'>{page.title}</Typography>
                   </NavLink>
                 </MenuItem>
               ))}
@@ -238,26 +256,25 @@ const ResponsiveNavBar = () => {
           {/* Desktop screen button menu */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <NavLink 
+              <NavLink
                 key={page.title}
-                to={page.url} 
+                to={page.url}
                 style={{ color: 'white', textDecoration: 'none' }}
               >
                 <Button
                   key={page.title}
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: 'white', display: 'block' }}
-
                 >
                   {page.title}
                 </Button>
               </NavLink>
             ))}
-            {isAuthenticated &&
+            {isAuthenticated && (
               <Button
                 variant='contained'
                 onClick={handleCloseNavMenu}
-                sx={{ 
+                sx={{
                   my: 2,
                   display: 'block',
                   marginLeft: 'auto',
@@ -269,7 +286,7 @@ const ResponsiveNavBar = () => {
                 <AddIcon />
                 Log Sandwich
               </Button>
-            }
+            )}
           </Box>
           {/* profile button */}
           {profileButton}
