@@ -12,11 +12,15 @@ import AllUsersPage from '../pages/AllUsersPage';
 import { useSelector } from 'react-redux';
 import { selectRole } from '../auth/authSlice';
 import { ROLES_ENUM } from '../utils/constants';
+import { useLocation } from 'react-router-dom';
 
 const MainContent = () => {
   const role = useSelector(selectRole);
   const isAdmin = role === ROLES_ENUM.ADMIN;
   const isEmployee = role === ROLES_ENUM.EMPLOYEE;
+
+  // Use location to refresh component between self Profile (/profile) and other user's Profile (/profile/:uname)
+  const location = useLocation();
 
   return (
     <div
@@ -35,14 +39,23 @@ const MainContent = () => {
           <Routes>
             <Route path='/' element={<HomePage />} />
             <Route path='/home' element={<Navigate to={'/'} replace />} />
-            <Route path='/profile' element={<ProfilePage />} />
-            <Route path='/profile/:uname' element={<UserProfilePage />} />
+            <Route
+              path='/profile'
+              element={<ProfilePage key={location.pathname} />}
+            />
+            <Route
+              path='/profile/:uname'
+              element={<ProfilePage key={location.pathname} />}
+            />
             <Route path='/search' element={<h1>search page</h1>} />
             <Route
               path='/allUsers'
               element={isAdmin ? <AllUsersPage /> : <NotFound />}
             />
-            <Route path='/sandwiches' element={(isAdmin || isEmployee) ? <Sandwiches /> : <NotFound />} />
+            <Route
+              path='/sandwiches'
+              element={isAdmin || isEmployee ? <Sandwiches /> : <NotFound />}
+            />
             <Route path='*' element={<NotFound />} />
           </Routes>
         </Container>

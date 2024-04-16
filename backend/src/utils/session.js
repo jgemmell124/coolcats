@@ -22,6 +22,8 @@ export const setUserSession = (req, user) => {
     name: user.name,
     email: user.email,
     _id: user._id,
+    followers: user.followers,
+    following: user.following,
   };
   req.session['user'] = userSessionInfo;
 

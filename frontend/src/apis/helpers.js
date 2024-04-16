@@ -16,9 +16,9 @@ const withCredentials = {
   withCredentials: true,
   headers: {
     'Cache-Control': 'no-cache',
-    'Pragma': 'no-cache',
-    'Expires': '0',
-  }
+    Pragma: 'no-cache',
+    Expires: '0',
+  },
 };
 
 export const authGet = (url) => {

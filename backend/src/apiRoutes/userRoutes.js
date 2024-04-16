@@ -24,12 +24,19 @@ router.get('/', async (req, res) => {
   if (!session?.role || session.role === ROLES_ENUM.USER) {
     // TODO should users be able to see employees?
     filter.role = ROLES_ENUM.USER;
-    Object.assign(baseProjection, { name: 0, email: 0, role: 0 });
+    Object.assign(baseProjection, {
+      name: 0,
+      email: 0,
+      role: 0,
+    });
   } else if (session.role === ROLES_ENUM.EMPLOYEE) {
     filter.role = {
       $in: [ROLES_ENUM.USER, ROLES_ENUM.EMPLOYEE],
     };
-    Object.assign(baseProjection, { name: 0, email: 0 });
+    Object.assign(baseProjection, {
+      name: 0,
+      email: 0,
+    });
   } else if (session.role !== ROLES_ENUM.ADMIN) {
     console.log('session', session);
     // invalid role
@@ -76,6 +83,8 @@ router.post('/', async (req, res) => {
     password,
     name,
     role: role ?? ROLES_ENUM.USER,
+    followers: [],
+    following: [],
   };
 
   try {
@@ -114,16 +123,23 @@ router.get('/:username', async (req, res) => {
     delete userInfo?.password;
     const userSession = getUserSession(req);
 
-    if (userSession?.role === ROLES_ENUM.ADMIN || userSession?.username === username) {
+    if (
+      userSession?.role === ROLES_ENUM.ADMIN ||
+      userSession?.username === username
+    ) {
       // admin can see all user info
       // user can see their own info
       // return info without password
       return res.json(userInfo).status(200);
     } else {
       // other users can only see username and _id
-      return res
-        .status(200)
-        .json({ username: userInfo.username, _id: userInfo._id, name: userInfo.name });
+      return res.status(200).json({
+        username: userInfo.username,
+        _id: userInfo._id,
+        name: userInfo.name,
+        followers: userInfo.followers,
+        following: userInfo.following,
+      });
     }
   } catch (err) {
     console.log(err);
@@ -202,6 +218,38 @@ router.delete('/:uid', async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(400).send('Failed to delete user');
+  }
+});
+
+router.get('/id/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // find user in the database
+    const user = await userDao.getUserById(id);
+
+    const userInfo = user.toObject();
+    delete userInfo?.password;
+    const userSession = getUserSession(req);
+
+    if (userSession?.role === ROLES_ENUM.ADMIN || userSession?._id === id) {
+      // admin can see all user info
+      // user can see their own info
+      // return info without password
+      return res.json(userInfo).status(200);
+    } else {
+      // other users can only see username and _id
+      return res.status(200).json({
+        username: userInfo.username,
+        _id: userInfo._id,
+        name: userInfo.name,
+        followers: userInfo.followers,
+        following: userInfo.following,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send('Failed to get user');
   }
 });
 
