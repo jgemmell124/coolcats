@@ -5,7 +5,15 @@ import XIcon from '@mui/icons-material/X';
 
 const Footer = () => {
   return (
-    <div className='container'>
+    <div
+      className='container'
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        flexGrow: '1',
+        minHeight: '10vh',
+      }}
+    >
       <footer className='d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top'>
         <div className='col-md-4 d-flex align-items-center'>
           <img src='../images/wollastons-logo.png' />
