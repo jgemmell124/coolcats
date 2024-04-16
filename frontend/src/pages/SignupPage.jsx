@@ -14,6 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import StatusAlert from '../components/StatusAlert';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -145,17 +146,27 @@ const LoginPage = () => {
                     onChange={(event) => setRole(event.target.value)}
                   >
                     <MenuItem value={'USER'}>USER</MenuItem>
-                    <MenuItem value={'EMPLOYEE'}>EMLPOYEE</MenuItem>
+                    <MenuItem value={'EMPLOYEE'}>EMPLOYEE</MenuItem>
                     <MenuItem value={'ADMIN'}>ADMIN</MenuItem>
                   </Select>
                 </FormControl>
 
                 <div className='form-outline mb-4'></div>
 
-                {error && <div className='alert alert-danger'>{error}</div>}
-                {success && (
-                  <div className='alert alert-success'>{success}</div>
-                )}
+                {error &&
+                  <StatusAlert
+                    message={error}
+                    setMessage={setError}
+                    status='alert-danger'
+                  />
+                }
+                {success &&
+                  <StatusAlert
+                    message={success}
+                    setMessage={setSuccess}
+                    status='alert-success'
+                  />
+                }
 
                 <Button
                   size='large'

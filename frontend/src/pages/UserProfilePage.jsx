@@ -7,7 +7,7 @@ import { getRatingsByUserId } from '../apis/Ratings';
 import { getUser } from '../apis/Users';
 import CircularProgress from '@mui/material/CircularProgress';
 import ProfileCard from '../components/ProfileCard';
-import Alert from '../components/Alert';
+import StatusAlert from '../components/StatusAlert';
 
 const UserProfilePage = () => {
   // grab url
@@ -47,7 +47,7 @@ const UserProfilePage = () => {
         <Grid item xs={4}>
           <CircularProgress />
         </Grid>
-      </Grid>    );
+      </Grid>);
   }
 
   if (_.isEmpty(user)) {
@@ -57,10 +57,10 @@ const UserProfilePage = () => {
 
   return (
     <>
-      <Grid 
+      <Grid
         alignContent={'center'}
         justifyContent={'center'}>
-        <Grid 
+        <Grid
           margin={'6px'}>
           <Grid item xs={12} sm={12} padding={'5px'}>
             <ProfileCard setCurrentUser={handleSetUser} currentUser={user} />
@@ -68,7 +68,7 @@ const UserProfilePage = () => {
         </Grid>
         <Grid item xs={13} padding={'5px'} marginTop={'30px'}>
           <Typography variant='h5'>Ratings ({ratings.length})</Typography>
-          <hr/>
+          <hr />
           {/* TODO: replace this with a rating card */}
           {ratings.length === 0 && <h1>No Ratings</h1>}
           {ratings.map((rating) => (
@@ -81,7 +81,11 @@ const UserProfilePage = () => {
           ))}
         </Grid>
       </Grid>
-      <Alert alert={error} setAlert={setError} />
+      <StatusAlert
+        message={error}
+        setMessage={setError}
+        status='alert-danger'
+      />
     </>
   );
 

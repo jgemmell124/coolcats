@@ -55,8 +55,14 @@ router.post('/', async (req, res) => {
 
   const { username, email, password, name, role } = req.body;
 
-  if (!username || !email || !password || !name) {
-    return res.status(400).send('Missing required fields');
+  if (!username) {
+    return res.status(400).send('Missing username');
+  } else if (!email) {
+    return res.status(400).send('Missing email');
+  } else if (!password) {
+    return res.status(400).send('Missing password');
+  } else if (!name) {
+    return res.status(400).send('Missing name');
   }
 
   // the provided role doesn't exist
@@ -125,17 +131,17 @@ router.get('/:username', async (req, res) => {
   }
 });
 
-router.put('/:username', async (req, res) => {
+router.put('/:uid', async (req, res) => {
   // admin can update any account
   // user can update their own account
-  const { username } = req.params;
+  const { uid } = req.params;
   const { role, ...updateParams } = req.body;
 
   const userSession = getUserSession(req);
 
   if (
     !userSession ||
-    (userSession.username !== username && userSession.role !== ROLES_ENUM.ADMIN)
+    (userSession._id !== uid && userSession.role !== ROLES_ENUM.ADMIN)
   ) {
     return res.status(403).send('Unauthorized');
   }
@@ -149,15 +155,15 @@ router.put('/:username', async (req, res) => {
         updateParams.role = role;
       }
     }
-    await userDao.updateUser(username, updateParams);
-    const updatedUser = await userDao.getUserByUsername(updateParams.username ?? username);
+    await userDao.updateUser(uid, updateParams);
+    const updatedUser = await userDao.getUserById(updateParams.uid ?? uid);
 
     // if the user is updating their own account, update the session
-    if (userSession.username === username) {
+    if (userSession._id === uid) {
       const userInfo = setUserSession(req, updatedUser);
       return res.json(userInfo).status(200);
     } else {
-      const user = await userDao.getUserByUsername(updateParams.username ?? username);
+      const user = await userDao.getUserById(updateParams.uid ?? uid);
       const userInfo = user?.toObject();
       delete userInfo?.password;
       return res.json(userInfo).status(200);
@@ -168,25 +174,31 @@ router.put('/:username', async (req, res) => {
   }
 });
 
-router.delete('/:username', async (req, res) => {
+router.delete('/:uid', async (req, res) => {
   // admin can delete any account
   // user can delete their own account
-  const { username } = req.params;
+  const { uid } = req.params;
   const userSession = getUserSession(req);
 
   if (
     !userSession ||
-    (userSession.username !== username && userSession.role !== ROLES_ENUM.ADMIN)
+    (userSession._id !== uid && userSession.role !== ROLES_ENUM.ADMIN)
   ) {
     return res.status(403).send('Unauthorized');
   }
   try {
-    await userDao.deleteUser(username);
-    // if a use deletes itself
-    if (userSession.username === username) {
-      req.session.destroy();
+    // check if user exists first
+    const foundUser = await userDao.getUserById(uid);
+    if (!foundUser) {
+      return res.status(404).send(`User with id ${uid} does not exist`);
+    } else {
+      await userDao.deleteUser(uid);
+      // if a user deletes itself
+      if (userSession._id === uid) {
+        req.session.destroy();
+      }
+      return res.status(202).send('User deleted');
     }
-    return res.status(202).send('User deleted');
   } catch (err) {
     console.log(err);
     return res.status(400).send('Failed to delete user');

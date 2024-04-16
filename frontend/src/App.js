@@ -28,7 +28,7 @@ function App() {
           <Route path='*' element={<MainContent />} />
         </Routes>
       </BrowserRouter>
-    </UserContext>
+    </UserContext >
   );
 }
 

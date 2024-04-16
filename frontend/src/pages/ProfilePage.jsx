@@ -7,7 +7,7 @@ import ProfileCard from '../components/ProfileCard';
 import { getSession } from '../apis/Auth';
 import { useNavigate } from 'react-router-dom';
 import { getRatingsByUserId } from '../apis/Ratings';
-import Alert from '../components/Alert';
+import StatusAlert from '../components/StatusAlert';
 
 const UserProfilePage = () => {
   const [ratings, setRatings] = useState([]);
@@ -40,7 +40,7 @@ const UserProfilePage = () => {
         <Grid item xs={4}>
           <CircularProgress />
         </Grid>
-      </Grid>    );
+      </Grid>);
   }
 
   if (_.isEmpty(currentUser)) {
@@ -50,12 +50,12 @@ const UserProfilePage = () => {
 
   return (
     <>
-      <Grid 
+      <Grid
         alignContent={'center'}
         justifyContent={'center'}
       >
         <Typography variant='h4'>My Profile</Typography>
-        <Grid 
+        <Grid
           margin={'6px'}>
           <Grid item xs={12} sm={12} padding={'5px'}>
             <ProfileCard setCurrentUser={setCurrentUser} currentUser={currentUser} />
@@ -63,7 +63,7 @@ const UserProfilePage = () => {
         </Grid>
         <Grid item xs={13} padding={'5px'} marginTop={'30px'}>
           <Typography variant='h5'>Ratings ({ratings.length})</Typography>
-          <hr/>
+          <hr />
           {/* TODO: replace this with a rating card */}
           {ratings.length === 0 && <h1>No Ratings</h1>}
           {ratings.map((rating) => (
@@ -76,7 +76,11 @@ const UserProfilePage = () => {
           ))}
         </Grid>
       </Grid>
-      <Alert alert={error} setAlert={setError} />
+      <StatusAlert
+        message={error}
+        setMessage={setError}
+        status='alert-danger'
+      />
     </>
   );
 
