@@ -5,7 +5,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { getSession } from '../apis/Auth';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getRatingsByUserId } from '../apis/Ratings';
-import Alert from '../components/Alert';
+import StatusAlert from '../components/StatusAlert';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
@@ -23,7 +23,7 @@ import { updateUser } from '../apis/Users';
 import { getUser } from '../apis/Users';
 
 const EditableField = ({
-  username,
+  userId,
   keyName,
   field,
   fieldState,
@@ -50,7 +50,7 @@ const EditableField = ({
                 disabled={fieldState === ''}
                 onClick={() => {
                   if (editingField) {
-                    updateUser(username, {
+                    updateUser(userId, {
                       [keyName]: fieldState,
                     })
                       .then(() => {
@@ -101,7 +101,7 @@ const EditableField = ({
 
 // Input prop validation
 EditableField.propTypes = {
-  username: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
   keyName: PropTypes.string.isRequired,
   field: PropTypes.string.isRequired,
   fieldState: PropTypes.string.isRequired,
@@ -203,14 +203,14 @@ const UserProfilePage = () => {
 
   const unfollowUser = (userToUnfollow) => async () => {
     // Update this user so that you are no longer following them
-    updateUser(userToUnfollow.username, {
+    updateUser(userToUnfollow._id, {
       followers: followers.filter((id) => id !== ourId),
     })
       .then(() => {
         setFollowingThisUser(false);
 
         // Update your profile so that you are no longer following them
-        updateUser(ourUsername, {
+        updateUser(ourId, {
           following: ourFollowing.filter((id) => id !== userToUnfollow._id),
         })
           .then(() => {})
@@ -223,14 +223,14 @@ const UserProfilePage = () => {
   };
 
   const followUser = (userToFollow) => async () => {
-    updateUser(userToFollow.username, {
+    updateUser(userToFollow._id, {
       followers: Array.from(new Set([...userToFollow.followers, ourId])), // Using a set to make sure no duplicates can be accidentally added!
     })
       .then(() => {
         setFollowingThisUser(true);
 
         // Update your profile so that you are following them
-        updateUser(ourUsername, {
+        updateUser(ourId, {
           following: Array.from(new Set([...ourFollowing, userToFollow._id])), // Using a set to make sure no duplicates can be accidentally added!
         })
           .then(() => {})
@@ -350,7 +350,7 @@ const UserProfilePage = () => {
             }}
           >
             <EditableField
-              username={profileUser.username || ''}
+              userId={profileUser._id || ''}
               keyName='username'
               field='Username'
               fieldState={editedUsername || ''}
@@ -360,7 +360,7 @@ const UserProfilePage = () => {
               isOurProfile={isOurProfile}
             />
             <EditableField
-              username={profileUser.username || ''}
+              userId={profileUser._id || ''}
               keyName='name'
               field='Full Name'
               fieldState={editedFullName || ''}
@@ -370,7 +370,7 @@ const UserProfilePage = () => {
               isOurProfile={isOurProfile}
             />
             <EditableField
-              username={profileUser.username || ''}
+              userId={profileUser._id || ''}
               keyName='email'
               field='Email'
               fieldState={editedEmail || ''}
@@ -469,7 +469,11 @@ const UserProfilePage = () => {
           />
         )}
       </Stack>
-      <Alert alert={error} setAlert={setError} />
+      <StatusAlert
+        message={error}
+        setMessage={setError}
+        status='alert-danger'
+      />
     </>
   );
 };
