@@ -3,6 +3,11 @@ import { ROLES_ENUM } from '../utils/constants.js';
 
 const userSchema = new mongoose.Schema(
   {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      unique: true,
+    },
     username: {
       type: String,
       required: true,
@@ -20,10 +25,22 @@ const userSchema = new mongoose.Schema(
       enum: ROLES_ENUM.ALL,
       default: ROLES_ENUM.USER,
     },
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     collection: 'users',
-    versionKey: false
+    versionKey: false,
   }
 );
 

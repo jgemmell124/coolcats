@@ -29,7 +29,6 @@ const headCells = [
 
 export default function AllUsersPage() {
   const [users, setUsers] = useState([]);
-
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('username');
   const [selected, setSelected] = React.useState([]);
@@ -107,14 +106,15 @@ export default function AllUsersPage() {
         setUsers(res.users);
       })
       .catch();
-  }, []);
+  }, [showEditModal]);
 
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
-      }}>
+      }}
+    >
       <Button
         style={{
           fontFamily: 'Gill Sans',
@@ -126,7 +126,8 @@ export default function AllUsersPage() {
         }}
         onClick={() => {
           setShowCreateUserModal(true);
-        }}>
+        }}
+      >
         Create User
       </Button>
       <Container
@@ -263,7 +264,7 @@ export default function AllUsersPage() {
               },
             }}
           />
-          {showCreateUserModal &&
+          {showCreateUserModal && (
             <EditUserModal
               open={showCreateUserModal}
               setShowEditModal={setShowCreateUserModal}
@@ -272,7 +273,7 @@ export default function AllUsersPage() {
               action='Create'
               selectedUser={{}}
             />
-          }
+          )}
           {showEditModal && (
             <EditUserModal
               selectedUser={selectedUser}
@@ -283,7 +284,7 @@ export default function AllUsersPage() {
               action='Edit'
             />
           )}
-          {showDeleteConfirmDialog &&
+          {showDeleteConfirmDialog && (
             <DeleteConfirmDialog
               selectedItem={selectedUser}
               itemType='User'
@@ -294,21 +295,21 @@ export default function AllUsersPage() {
               setError={setError}
               setSuccess={setSuccess}
             />
-          }
-          {error &&
+          )}
+          {error && (
             <StatusAlert
               message={error}
               setMessage={setError}
               status='alert-danger'
             />
-          }
-          {success &&
+          )}
+          {success && (
             <StatusAlert
               message={success}
               setMessage={setSuccess}
               status='alert-success'
             />
-          }
+          )}
         </Stack>
       </Container>
     </Box>

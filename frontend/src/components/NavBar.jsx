@@ -76,9 +76,13 @@ const ResponsiveNavBar = () => {
 
   const pages = [
     { title: 'Home', url: '/', highestRole: ROLES_ENUM.GUEST },
-    { title: 'All Sandwiches', url: '/sandwiches', highestRole: ROLES_ENUM.EMPLOYEE },
-    { title: 'All Users', url: '/allUsers', highestRole: ROLES_ENUM.ADMIN },
-    { title: 'Your Stats', url: '/stats', highestRole: ROLES_ENUM.USER },
+    {
+      title: 'Sandwiches',
+      url: '/sandwiches',
+      highestRole: ROLES_ENUM.EMPLOYEE,
+    },
+    { title: 'Users', url: '/allUsers', highestRole: ROLES_ENUM.ADMIN },
+    { title: 'Stats', url: '/stats', highestRole: ROLES_ENUM.USER },
   ].filter((page) => userHasAccess(page.highestRole));
 
   const accountMenu = [
@@ -140,7 +144,7 @@ const ResponsiveNavBar = () => {
   const logSandwichButtonMobile = (
     <Button
       variant='contained'
-      onClick={() => { }}
+      onClick={() => {}}
       sx={{
         marginTop: '5px',
         marginLeft: '5px',
@@ -159,6 +163,7 @@ const ResponsiveNavBar = () => {
       position='fixed'
       sx={{
         backgroundColor: '#090910',
+        height: '65px',
       }}
     >
       <Container maxWidth='lg'>

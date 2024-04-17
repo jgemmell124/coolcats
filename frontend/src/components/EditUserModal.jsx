@@ -14,7 +14,14 @@ import {
 import FormControl from '@mui/material/FormControl';
 import { createUser, updateUser } from '../apis/Users';
 
-const EditUserModal = ({ open, selectedUser, setShowEditModal, action, setError, setSuccess }) => {
+const EditUserModal = ({
+  open,
+  selectedUser,
+  setShowEditModal,
+  action,
+  setError,
+  setSuccess,
+}) => {
   const [role, setRole] = React.useState(selectedUser.role);
   const [email, setEmail] = React.useState(selectedUser.email);
   const [name, setName] = React.useState(selectedUser.name);
@@ -71,7 +78,9 @@ const EditUserModal = ({ open, selectedUser, setShowEditModal, action, setError,
         direction='column'
         sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
-        <DialogTitle><b>{action} User</b></DialogTitle>
+        <DialogTitle>
+          <b>{action} User</b>
+        </DialogTitle>
 
         <TextField
           id='username-input'
@@ -135,7 +144,7 @@ EditUserModal.propTypes = {
   setShowEditModal: PropTypes.func.isRequired,
   action: PropTypes.string.isRequired,
   setError: PropTypes.func.isRequired,
-  setSuccess: PropTypes.func.isRequired
+  setSuccess: PropTypes.func.isRequired,
 };
 
 export default EditUserModal;
