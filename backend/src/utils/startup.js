@@ -105,13 +105,13 @@ const populateDatabase = async () => {
 
   for (const userId of userIds) {
     for (const sandwichId of sandwichIds) {
-      const rating = Math.floor(Math.random() * 10) + 1;
+      const rating = Math.floor(Math.random() * 5) + 1;
       const ratingObj = {
         sandwich_id: sandwichId,
         user_id: userId,
         rating,
         title: 'Wow this is great!',
-        description: 'This is a really descriptive review about some sandwich',
+        comment: 'This is a really descriptive review about some sandwich'
       };
       try {
         await ratingDao.createRating(ratingObj);

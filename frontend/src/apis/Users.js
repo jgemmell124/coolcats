@@ -4,7 +4,7 @@ const API_URL = `${BASE_URL}/api`;
 const USERS_URL = `${API_URL}/users`;
 import { authPost, authDelete, authGet, authPut } from './helpers';
 
-export const getUser = (username) => {
+export const getUserByUsername = (username) => {
   return authGet(`${USERS_URL}/${username}`);
 };
 

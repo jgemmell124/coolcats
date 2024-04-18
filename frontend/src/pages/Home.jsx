@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { getAllSandwiches } from '../apis/Sandwiches';
-import Footer from '../components/Footer';
 import { useSelector } from 'react-redux';
 import { getAllRatings } from '../apis/Ratings';
 import ReviewCarousel from '../components/ReviewCarousel';
@@ -20,6 +19,7 @@ const HomePage = () => {
       .then((res) => setRatings(res.ratings))
       .catch();
   }, []);
+
   return (
     <>
       <div className='container'>
@@ -42,10 +42,10 @@ const HomePage = () => {
             float: 'left',
           }}
           loading='lazy'
-          allowfullscreen
+          allowFullScreen
           src={
             'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ3V9Axxh644kRYpjOb4LAAPg&key=' +
-            process.env.REACT_APP_GOOGLE_API_KEY
+              process.env.REACT_APP_GOOGLE_API_KEY
           }
         ></iframe>
         <iframe
@@ -56,13 +56,12 @@ const HomePage = () => {
             float: 'right',
           }}
           loading='lazy'
-          allowfullscreen
+          allowFullScreen
           src={
             'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ07NCiCF644kRokxOOSJwRuc&key=' +
-            process.env.REACT_APP_GOOGLE_API_KEY
+              process.env.REACT_APP_GOOGLE_API_KEY
           }
         ></iframe>
-        <Footer />
       </div>
     </>
   );

@@ -147,6 +147,43 @@ router.get('/:username', async (req, res) => {
   }
 });
 
+router.get('/id/:uid', async (req, res) => {
+  // admin can see all user info
+  // user can see their own info
+  // other users can only see username and _id
+  const { uid } = req.params;
+
+  try {
+    // find user in the database
+    const user = await userDao.getUserById(uid);
+
+    // don't show admins
+    if (!user || user.role === ROLES_ENUM.ADMIN) {
+      return res.status(404).send('User not found');
+    }
+
+    const userInfo = user.toObject();
+    delete userInfo?.password;
+    const userSession = getUserSession(req);
+
+    if (userSession?.role === ROLES_ENUM.ADMIN || userSession?._id === uid) {
+      // admin can see all user info
+      // user can see their own info
+      // return info without password
+      return res.json(userInfo).status(200);
+    } else {
+      // other users can only see username and _id
+      return res
+        .status(200)
+        .json({ username: userInfo.username, _id: userInfo._id, name: userInfo.name });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(400).send('Failed to get user');
+  }
+
+});
+
 router.put('/:uid', async (req, res) => {
   // admin can update any account
   // user can update their own account

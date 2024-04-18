@@ -1,5 +1,4 @@
 import { Grid, Typography } from '@mui/material';
-import { Box } from '@mui/system';
 import React, { useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import { getSession } from '../apis/Auth';
@@ -19,8 +18,9 @@ import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import FollowModal from '../components/FollowModal';
+import RatingCard from '../components/RatingCard';
 import { updateUser } from '../apis/Users';
-import { getUser } from '../apis/Users';
+import { getUserByUsername } from '../apis/Users';
 
 const EditableField = ({
   userId,
@@ -168,7 +168,7 @@ const ProfilePage = () => {
   React.useEffect(() => {
     // Check to see if there is a url parameter
     if (uname) {
-      getUser(uname)
+      getUserByUsername(uname)
         .then((user) => {
           setProfileUser(user);
           setEditedUsername(user.username);
@@ -429,20 +429,12 @@ const ProfilePage = () => {
               margin: '10px',
             }}
           />
-          {/* TODO: replace this with a rating card */}
           {ratings.length === 0 && <h1>No Sandwich Reviews</h1>}
-          {ratings.map((rating) => (
-            <Box
-              key={rating._id}
-              sx={{ border: '3px solid black', margin: '3px' }}
-            >
-              <Typography variant='h7'>{rating.title ?? 'No title'}</Typography>
-              <Typography variant='h7'>{rating.rating}</Typography>
-              <Typography variant='subtitle2'>
-                {rating.comment ?? 'no Comment'}
-              </Typography>
-            </Box>
-          ))}
+          <Stack paddingTop={'5px'} spacing={2} alignItems={'center'} width={'100%'}>
+            {ratings.map((rating) => (
+              <RatingCard key={rating._id} rating={rating} />
+            ))}
+          </Stack>
         </Grid>
         {showFollowersModal && (
           <FollowModal

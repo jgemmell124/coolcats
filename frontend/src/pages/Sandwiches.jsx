@@ -196,7 +196,6 @@ const Sandwiches = () => {
                         component='th'
                         id={labelId}
                         scope='row'
-                        padding='1'
                         sx={{
                           borderBottom: '1px solid black',
                         }}

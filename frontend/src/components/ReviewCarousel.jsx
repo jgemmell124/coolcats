@@ -1,4 +1,5 @@
 import React from 'react';
+import { Carousel } from 'react-bootstrap';
 import RatingCard from './RatingCard';
 import PropTypes from 'prop-types';
 
@@ -6,57 +7,32 @@ const ReviewCarousel = ({ ratings }) => {
   return (
     <>
       <h2>Recent Reviews</h2>
-      <div
-        style={{ backgroundImage: '../background.jpeg' }}
-        id='carouselExampleDark'
-        className='carousel carousel-dark slide'
-        data-bs-ride='carousel'
+      <Carousel 
+        variant='dark'
+        interval={1500}
+        style={{
+          paddingTop: '50px',
+          paddingBottom: '50px'
+        }}
       >
-        <div className='carousel-inner'>
-          <div
-            className='carousel-item active'
-            style={{ float: 'center', left: '25%' }}
+        {ratings.splice(0, 3).map((rating) => (
+          <Carousel.Item
+            key={rating._id}
+            style={{
+              width: '100%'
+            }}
           >
-            <RatingCard rating={ratings} />
-          </div>
-          <div
-            className='carousel-item'
-            style={{ float: 'center', left: '25%' }}
-          >
-            <RatingCard rating={ratings} />
-          </div>
-          <div
-            className='carousel-item'
-            style={{ float: 'center', left: '25%' }}
-          >
-            <RatingCard rating={ratings} />
-          </div>
-        </div>
-        <button
-          className='carousel-control-prev'
-          type='button'
-          data-bs-target='#carouselExampleDark'
-          data-bs-slide='prev'
-        >
-          <span
-            className='carousel-control-prev-icon'
-            aria-hidden='true'
-          ></span>
-          <span className='visually-hidden'>Previous</span>
-        </button>
-        <button
-          className='carousel-control-next'
-          type='button'
-          data-bs-target='#carouselExampleDark'
-          data-bs-slide='next'
-        >
-          <span
-            className='carousel-control-next-icon'
-            aria-hidden='true'
-          ></span>
-          <span className='visually-hidden'>Next</span>
-        </button>
-      </div>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <RatingCard rating={rating} />
+            </div>
+          </Carousel.Item>
+        ))}
+      </Carousel>
     </>
   );
 };
