@@ -4,15 +4,14 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from '../pages/Home';
 import NotFound from '../pages/NotFound';
 import ProfilePage from '../pages/ProfilePage';
-import UserProfilePage from '../pages/UserProfilePage';
 import Sandwiches from '../pages/Sandwiches';
 import ResponsiveNavBar from './NavBar';
 import AllUsersPage from '../pages/AllUsersPage';
-
 import { useSelector } from 'react-redux';
 import { selectRole } from '../auth/authSlice';
 import { ROLES_ENUM } from '../utils/constants';
 import { useLocation } from 'react-router-dom';
+import SearchPage from '../pages/SearchPage';
 
 const MainContent = () => {
   const role = useSelector(selectRole);
@@ -47,7 +46,7 @@ const MainContent = () => {
               path='/profile/:uname'
               element={<ProfilePage key={location.pathname} />}
             />
-            <Route path='/search' element={<h1>search page</h1>} />
+            <Route path='/search' element={<SearchPage />} />
             <Route
               path='/allUsers'
               element={isAdmin ? <AllUsersPage /> : <NotFound />}

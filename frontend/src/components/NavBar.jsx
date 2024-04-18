@@ -18,6 +18,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { logout } from '../apis/Auth';
 import { logoutUser, selectAuth } from '../auth/authSlice';
 import { ROLES_ENUM } from '../utils/constants';
+import SearchIcon from '@mui/icons-material/Search';
 
 const ResponsiveNavBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -225,6 +226,14 @@ const ResponsiveNavBar = () => {
                   </NavLink>
                 </MenuItem>
               ))}
+              <MenuItem onClick={handleCloseNavMenu}>
+                <NavLink
+                  to={'/search'}
+                  style={{ color: 'black', textDecoration: 'none' }}
+                >
+                  <Typography textAlign='center'>Search</Typography>
+                </NavLink>
+              </MenuItem>
               {isAuthenticated && logSandwichButtonMobile}
             </Menu>
           </Box>
@@ -264,6 +273,25 @@ const ResponsiveNavBar = () => {
                 </Button>
               </NavLink>
             ))}
+            <NavLink
+              to={'/search'}
+              style={{
+                marginTop: 'auto',
+                marginBottom: 'auto',
+              }}
+            >
+              <IconButton
+                type='button'
+                sx={{
+                  height: '40px',
+                  width: '40px',
+                }}
+                aria-label='search'
+              >
+                <SearchIcon sx={{ color: 'white' }} />
+              </IconButton>
+            </NavLink>
+
             {isAuthenticated && (
               <Button
                 variant='contained'

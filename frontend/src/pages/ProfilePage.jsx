@@ -123,7 +123,7 @@ const imgInputStyle = {
   width: 1,
 };
 
-const UserProfilePage = () => {
+const ProfilePage = () => {
   // TODO: hide the /profile page from people not logged in, redirect to login/home page
   // need to also add stuff that prevents you from seeing the follow/unfollow buttons on profiles if you're not signed in
   const { uname } = useParams();
@@ -478,4 +478,4 @@ const UserProfilePage = () => {
   );
 };
 
-export default UserProfilePage;
+export default ProfilePage;

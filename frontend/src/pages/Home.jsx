@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { getAllSandwiches } from '../apis/Sandwiches';
-import { getAllUsers } from '../apis/Users';
 import Footer from '../components/Footer';
 import { useSelector } from 'react-redux';
 import { getAllRatings } from '../apis/Ratings';
@@ -8,16 +7,11 @@ import ReviewCarousel from '../components/ReviewCarousel';
 import FeaturedSandwiches from '../components/FeaturedSandwiches';
 
 const HomePage = () => {
-  const [users, setUsers] = useState([]);
   const username = useSelector((state) => state.auth?.user?.username);
   const [sandwiches, setSandwiches] = useState([]);
   const [ratings, setRatings] = useState([]);
 
   useEffect(() => {
-    getAllUsers()
-      .then((res) => setUsers(res.users))
-      .catch();
-
     getAllSandwiches()
       .then((res) => setSandwiches(res.sandwiches))
       .catch();
@@ -28,9 +22,7 @@ const HomePage = () => {
   }, []);
   return (
     <>
-      <div
-        className='container'
-      >
+      <div className='container'>
         <h1>
           Welcome back, <span style={{ color: '#A9333A' }}>{username}</span>.
           Here&apos;s what your friends have been eating!
