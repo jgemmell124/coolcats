@@ -10,16 +10,16 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Paper from '@mui/material/Paper';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getAllUsers } from '../apis/Users';
 import { getAllSandwiches } from '../apis/Sandwiches';
-import { useNavigate } from 'react-router-dom';
 
 const SearchPage = () => {
-  const [searchType, setSearchType] = useState('Users');
-  const [searchTerm, setSearchTerm] = useState('');
   const [sandwiches, setSandwiches] = useState([]);
   const [users, setUsers] = useState([]);
-  const [results, setResults] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchType, setSearchType] = useState('Users');
 
   const navigate = useNavigate();
 
@@ -35,21 +35,36 @@ const SearchPage = () => {
     });
   }, []);
 
-  const noResults = () => {
-    return (
-      <div>
-        <h4>No Results Found</h4>
-        There were no matches for your search term.
-      </div>
-    );
-  };
 
   const renderResults = () => {
-    // Determine if we are rendering sandwhiches or userse from the first entry
-    const isSandwich = 'price' in results[0];
+    const userSearch = searchParams.get('users');
+    const sandwichSearch = searchParams.get('sandwiches');
 
-    if (isSandwich) {
-      return results.map((sandwich) => {
+    const searchedTerm = userSearch ?? sandwichSearch ?? '';
+    const searchedType = userSearch ? 'Users' : sandwichSearch ? 'Sandwiches' : '';
+
+    const results = findResults(searchedType, searchedTerm);
+
+    const isSandwich = searchedType === 'Sandwiches';
+    const isUser = searchedType === 'Users';
+
+    if (results.length === 0 && !isSandwich && !isUser) {
+      return (
+        <div>
+          <h3>Type in a search query to begin a search</h3>
+        </div>
+      );
+    }
+
+    let result;
+    if (results.length === 0) {
+      result =  (
+        <div>
+          <h3>No results found</h3>
+        </div>
+      );
+    } else if (isSandwich) {
+      result = results.map((sandwich) => {
         return (
           <Box
             sx={{
@@ -81,8 +96,8 @@ const SearchPage = () => {
           </Box>
         );
       });
-    } else {
-      return results.map((user) => {
+    } else if (isUser) {
+      result = results.map((user) => {
         return (
           <Box
             sx={{
@@ -130,43 +145,58 @@ const SearchPage = () => {
         );
       });
     }
+
+    return (
+      <>
+        <Typography
+          variant='h5'
+          sx={{
+            fontStyle: 'italic',
+            margin: '5px',
+          }}
+        >
+          {`Showing Results for ${searchedType}: ${searchedTerm}`}
+        </Typography>
+        {result}
+      </>
+    );
   };
 
-  const searchForResults = (searchTerm, searchType) => {
-    // Clear the results list
-    setResults([]);
+  const findResults = (searchedTerm, searchedType) => {
 
-    if (searchTerm === '') {
-      return;
+    if (searchedTerm === '' || searchedType === '') {
+      return [];
     }
 
     // If the search type is 'Users', add any users whose email, username, or name matches the search term (case-insensitive)
-    if (searchType === 'Users') {
+    if (searchedType === 'Users') {
       const usersResults = users.filter(
         (user) =>
           (user?.email || '')
             .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          (user?.username || '')
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          (user?.name || '').toLowerCase().includes(searchTerm.toLowerCase())
+            .includes(searchedTerm.toLowerCase()) ||
+            (user?.username || '')
+              .toLowerCase()
+              .includes(searchedTerm.toLowerCase()) ||
+            (user?.name || '').toLowerCase().includes(searchedTerm.toLowerCase())
       );
-      setResults(usersResults);
+      return usersResults;
     }
 
     // If the search type is 'Sandwiches', add any sandwiches whose name, description, or price (converted to string) matches the search term (case-insensitive)
-    if (searchType === 'Sandwiches') {
+    if (searchedType === 'Sandwiches') {
       const sandwichesResults = sandwiches.filter(
         (sandwich) =>
-          sandwich.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          sandwich.description
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          sandwich.price.toString().includes(searchTerm)
+          sandwich.name.toLowerCase().includes(searchedTerm.toLowerCase()) ||
+            sandwich.description
+              .toLowerCase()
+              .includes(searchedTerm.toLowerCase()) ||
+            sandwich.price.toString().includes(searchedTerm)
       );
-      setResults(sandwichesResults);
+      return sandwichesResults;
     }
+
+    return [];
   };
 
   return (
@@ -211,13 +241,16 @@ const SearchPage = () => {
           type='button'
           sx={{ p: '10px' }}
           aria-label='search'
-          onClick={() => searchForResults(searchTerm, searchType)}
+          onClick={() => {
+            setSearchParams(searchType === 'Users' ? { users: searchTerm } : { sandwiches: searchTerm });
+          }}
         >
           <SearchIcon />
         </IconButton>
+
       </Paper>
       <hr style={{ border: '0.5px solid black', opacity: '1' }} />
-      {results.length === 0 ? noResults() : renderResults()}
+      {renderResults()}
     </div>
   );
 };
