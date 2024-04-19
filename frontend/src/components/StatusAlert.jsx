@@ -32,7 +32,7 @@ const StatusAlert = ({ message, setMessage, status }) => {
 };
 
 StatusAlert.propTypes = {
-  message: PropTypes.string.isRequired,
+  message: PropTypes.string,
   setMessage: PropTypes.func.isRequired,
   status: PropTypes.string.isRequired
 };

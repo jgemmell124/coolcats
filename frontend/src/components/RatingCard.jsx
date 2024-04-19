@@ -210,7 +210,6 @@ const RatingCard = ({ rating, handleEditClick }) => {
 };
 
 RatingCard.propTypes = {
-  setRating: PropTypes.func.isRequired,
   rating: PropTypes.object.isRequired,
   handleEditClick: PropTypes.func,
 };

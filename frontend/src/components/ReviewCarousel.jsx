@@ -39,9 +39,10 @@ const ReviewCarousel = ({ ratings }) => {
 ReviewCarousel.propTypes = {
   ratings: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      score: PropTypes.number.isRequired,
-      comment: PropTypes.string,
+      _id: PropTypes.string.isRequired,
+      rating: PropTypes.number.isRequired,
+      comment: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
     })
   ).isRequired,
 };
