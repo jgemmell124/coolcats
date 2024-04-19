@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Grid } from '@mui/material';
 
-const NotFound = () => {
+const NotFound = ({ message }) => {
   return (
     <Grid 
       marginRight='auto'
@@ -16,13 +17,17 @@ const NotFound = () => {
         <h1>404 Not Found</h1>
       </Grid>
       <Grid item>
-        <img style={{ maxWidth: '400px', justifyContent: 'center' }} src='/Snoopy-doghouse-1.jpg' alt='snoopy' />
+        <img style={{ width: '100%', maxWidth: '600px', justifyContent: 'center' }} src='/images/po.png' alt='snoopy' />
       </Grid>
       <Grid item>
-        <h1>This page does not exist</h1>
+        <h1>{message ?? 'This page does not exist'}</h1>
       </Grid>
     </Grid>
   );
+};
+
+NotFound.propTypes = {
+  message: PropTypes.string,
 };
 
 export default NotFound;

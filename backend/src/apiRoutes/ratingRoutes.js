@@ -104,9 +104,9 @@ router.put('/:id', async (req, res) => {
     }
 
     // can only modify rating and comment
-    const { rating, comment } = req.body;
+    const { rating, comment, title } = req.body;
 
-    if (!rating && !comment) {
+    if (!rating && !comment && !title) {
       return res.status(400).send('Updated fields required');
     }
 
@@ -116,6 +116,9 @@ router.put('/:id', async (req, res) => {
     }
     if (comment) {
       updateParams.comment = comment;
+    }
+    if (title) {
+      updateParams.title = title;
     }
 
     const updatedRating = await ratingDao.updateRating(id, updateParams);

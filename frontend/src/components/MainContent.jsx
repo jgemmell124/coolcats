@@ -12,6 +12,8 @@ import { selectRole } from '../auth/authSlice';
 import { ROLES_ENUM } from '../utils/constants';
 import { useLocation } from 'react-router-dom';
 import SearchPage from '../pages/SearchPage';
+import SandwichPage from '../pages/SandwichPage';
+import Footer from './Footer';
 
 const MainContent = () => {
   const role = useSelector(selectRole);
@@ -33,7 +35,7 @@ const MainContent = () => {
       }}
     >
       <ResponsiveNavBar />
-      <div style={{ marginTop: '100px' }}>
+      <div style={{ marginTop: '100px', marginBottom: '100px', minHeight: '65vh' }}>
         <Container maxWidth='lg'>
           <Routes>
             <Route path='/' element={<HomePage />} />
@@ -55,10 +57,12 @@ const MainContent = () => {
               path='/sandwiches'
               element={isAdmin || isEmployee ? <Sandwiches /> : <NotFound />}
             />
+            <Route path='/sandwiches/:sid' element={<SandwichPage />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
         </Container>
       </div>
+      <Footer />
     </div>
   );
 };
