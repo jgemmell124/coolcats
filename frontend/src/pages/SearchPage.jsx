@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getAllUsers } from '../apis/Users';
 import { getAllSandwiches } from '../apis/Sandwiches';
+import SandwichPreviewCard from '../components/SandwichPreviewCard';
 
 const SearchPage = () => {
   const [sandwiches, setSandwiches] = useState([]);
@@ -43,7 +44,7 @@ const SearchPage = () => {
     const searchedTerm = userSearch ?? sandwichSearch ?? '';
     const searchedType = userSearch ? 'Users' : sandwichSearch ? 'Sandwiches' : '';
 
-    const results = findResults(searchedType, searchedTerm);
+    const results = findResults(searchedTerm, searchedType);
 
     const isSandwich = searchedType === 'Sandwiches';
     const isUser = searchedType === 'Users';
@@ -64,38 +65,15 @@ const SearchPage = () => {
         </div>
       );
     } else if (isSandwich) {
-      result = results.map((sandwich) => {
-        return (
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              backgroundColor: 'rgba(255, 255, 255, 0.6)',
-              boxShadow: '0px 1px 5px 0px black',
-              borderRadius: '15px',
-              width: '80%',
-              height: '150px',
-              padding: '15px',
-              marginBottom: '25px',
-            }}
-            key={sandwich._id}
-          >
-            <img
-              src={'/images/noImage.jpeg'}
-              height='100%'
-              width='auto'
-              style={{ borderRadius: '15px', marginRight: '15px' }}
-            />
-            <div>
-              <Typography variant='h4'>{sandwich.name}</Typography>
-              <Typography variant='h6' sx={{ color: '#A9333A' }}>
-                ${sandwich.price}
-              </Typography>
-              <i>{sandwich.description}</i>
-            </div>
-          </Box>
-        );
-      });
+      result = results.map((sandwich) => (
+        <SandwichPreviewCard
+          key={sandwich._id}
+          _id={sandwich._id}
+          name={sandwich.name}
+          description={sandwich.description}
+          price={sandwich.price}
+        />
+      ));
     } else if (isUser) {
       result = results.map((user) => {
         return (

@@ -8,17 +8,16 @@ import Sandwiches from '../pages/Sandwiches';
 import ResponsiveNavBar from './NavBar';
 import AllUsersPage from '../pages/AllUsersPage';
 import { useSelector } from 'react-redux';
-import { selectRole } from '../auth/authSlice';
-import { ROLES_ENUM } from '../utils/constants';
+import { selectAuth, selectIsWhatRole } from '../auth/authSlice';
 import { useLocation } from 'react-router-dom';
 import SearchPage from '../pages/SearchPage';
 import SandwichPage from '../pages/SandwichPage';
 import Footer from './Footer';
+import BrowseSandwichesPage from '../pages/BrowseSandwiches';
 
 const MainContent = () => {
-  const role = useSelector(selectRole);
-  const isAdmin = role === ROLES_ENUM.ADMIN;
-  const isEmployee = role === ROLES_ENUM.EMPLOYEE;
+  const { isAdmin, isEmployee } = useSelector(selectIsWhatRole());
+  const { isAuthenticated } = useSelector(selectAuth);
 
   // Use location to refresh component between self Profile (/profile) and other user's Profile (/profile/:uname)
   const location = useLocation();
@@ -42,7 +41,12 @@ const MainContent = () => {
             <Route path='/home' element={<Navigate to={'/'} replace />} />
             <Route
               path='/profile'
-              element={<ProfilePage key={location.pathname} />}
+              element={ 
+                isAuthenticated ? 
+                  <ProfilePage key={location.pathname} /> 
+                  :
+                  <Navigate to={'/'} replace />
+              }
             />
             <Route
               path='/profile/:uname'
@@ -55,7 +59,7 @@ const MainContent = () => {
             />
             <Route
               path='/sandwiches'
-              element={isAdmin || isEmployee ? <Sandwiches /> : <NotFound />}
+              element={isAdmin || isEmployee ? <Sandwiches /> : <BrowseSandwichesPage />}
             />
             <Route path='/sandwiches/:sid' element={<SandwichPage />} />
             <Route path='*' element={<NotFound />} />
