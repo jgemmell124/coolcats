@@ -80,10 +80,10 @@ const ResponsiveNavBar = () => {
     {
       title: 'Sandwiches',
       url: '/sandwiches',
-      highestRole: ROLES_ENUM.EMPLOYEE,
+      highestRole: ROLES_ENUM.GUEST,
     },
     { title: 'Users', url: '/allUsers', highestRole: ROLES_ENUM.ADMIN },
-    { title: 'Stats', url: '/stats', highestRole: ROLES_ENUM.USER },
+    /* { title: 'Stats', url: '/stats', highestRole: ROLES_ENUM.USER }, */
   ].filter((page) => userHasAccess(page.highestRole));
 
   const accountMenu = [
