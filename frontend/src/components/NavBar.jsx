@@ -83,7 +83,7 @@ const ResponsiveNavBar = () => {
       highestRole: ROLES_ENUM.GUEST,
     },
     { title: 'Users', url: '/allUsers', highestRole: ROLES_ENUM.ADMIN },
-    /* { title: 'Stats', url: '/stats', highestRole: ROLES_ENUM.USER }, */
+    { title: 'Feed', url: '/feed', highestRole: ROLES_ENUM.GUEST },
   ].filter((page) => userHasAccess(page.highestRole));
 
   const accountMenu = [

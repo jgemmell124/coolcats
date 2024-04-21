@@ -14,6 +14,7 @@ import SearchPage from '../pages/SearchPage';
 import SandwichPage from '../pages/SandwichPage';
 import Footer from './Footer';
 import BrowseSandwichesPage from '../pages/BrowseSandwiches';
+import FeedPage from '../pages/FeedPage';
 
 const MainContent = () => {
   const { isAdmin, isEmployee } = useSelector(selectIsWhatRole());
@@ -62,6 +63,7 @@ const MainContent = () => {
               element={isAdmin || isEmployee ? <Sandwiches /> : <BrowseSandwichesPage />}
             />
             <Route path='/sandwiches/:sid' element={<SandwichPage />} />
+            <Route path='/feed' element={<FeedPage />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
         </Container>

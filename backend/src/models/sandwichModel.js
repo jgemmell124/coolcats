@@ -21,6 +21,10 @@ const sandwichSchema = new mongoose.Schema(
   },
   {
     collection: 'sandwiches',
+    timestamps: {
+      createdAt: 'created',
+      updatedAt: 'lastEdited',
+    },
     versionKey: false
   }
 );
