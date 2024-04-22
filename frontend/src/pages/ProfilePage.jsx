@@ -21,6 +21,8 @@ import FollowModal from '../components/FollowModal';
 import RatingCard from '../components/RatingCard';
 import { updateUser } from '../apis/Users';
 import { getUserByUsername } from '../apis/Users';
+import ReviewModal from '../components/ReviewModal';
+import { selectIsWhatRole } from '../auth/authSlice';
 
 const EditableField = ({
   userId,
@@ -136,6 +138,7 @@ const ProfilePage = () => {
   const ourUsername = useSelector((state) => state.auth?.user?.username);
   const ourId = useSelector((state) => state.auth?.user?._id);
   const ourFollowing = useSelector((state) => state.auth?.user?.following);
+  const { isAdmin } = useSelector(selectIsWhatRole(ourId));
 
   const [isOurProfile, setIsOurProfile] = useState(true);
 
@@ -155,6 +158,9 @@ const ProfilePage = () => {
 
   const [showFollowersModal, setShowFollowersModal] = useState(false);
   const [showFollowingModal, setShowFollowingModal] = useState(false);
+
+  const [selectedRating, setSelectedRating] = useState({});
+  const [openEditReviewModal, setOpenEditReviewModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -240,6 +246,12 @@ const ProfilePage = () => {
         setError(err?.response?.data ?? err.message);
         return;
       });
+  };
+
+  const onEditReview = (rating) => {
+    const index = ratings.findIndex((r) => r._id === rating._id);
+    ratings[index] = rating;
+    setRatings([...ratings]);
   };
 
   if (!loaded) {
@@ -432,10 +444,29 @@ const ProfilePage = () => {
           {ratings.length === 0 && <h1>No Sandwich Reviews</h1>}
           <Stack paddingTop={'5px'} spacing={2} alignItems={'center'} width={'100%'}>
             {ratings.map((rating) => (
-              <RatingCard key={rating._id} rating={rating} />
+              <RatingCard 
+                key={rating._id}
+                rating={rating}
+                handleEditClick={() => {
+                  setSelectedRating(rating);
+                  setOpenEditReviewModal(true);
+                }}
+              />
             ))}
           </Stack>
         </Grid>
+        {(isOurProfile || isAdmin) &&
+          openEditReviewModal &&
+          <ReviewModal
+            open={openEditReviewModal}
+            setOpen={setOpenEditReviewModal}
+            isNew={false}
+            onSubmit={onEditReview}
+            rating={selectedRating}
+            sid={profileUser._id}
+            uid={ourId}
+          />
+        }
         {showFollowersModal && (
           <FollowModal
             showModal={showFollowersModal}

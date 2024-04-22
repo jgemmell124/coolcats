@@ -135,7 +135,7 @@ const RatingCard = ({ rating, handleEditClick }) => {
           }
           action={
             // admin and user who wrote the review can edit their review
-            (isAdmin || isSelf) &&
+            (isAdmin || isSelf) && handleEditClick &&
               <Tooltip title='Edit'>
                 <Button 
                   startIcon={<EditIcon />}
@@ -182,7 +182,7 @@ const RatingCard = ({ rating, handleEditClick }) => {
                 }}
                 color={liked ? 'primary' : 'inherit'}
               >
-                13
+                {liked ? 14 : 13}
               </Button>
               <Button
                 startIcon={<ThumbDownIcon />}
@@ -192,7 +192,7 @@ const RatingCard = ({ rating, handleEditClick }) => {
                 }}
                 color={disliked ? 'error' : 'inherit'}
               >
-                4
+                {disliked ? 5 : 4}
               </Button>
             </Grid>
             <Grid item>

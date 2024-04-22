@@ -12,24 +12,18 @@ import {
 } from '@mui/material';
 import { createRating, updateRating } from '../apis/Ratings';
 
-const ReviewModal = ({ open, isNew, rating, setOpen, rid, uid, sid, comment, title  }) => {
-  const [stars, setStars] = useState(rating);
-  const [newComment, setNewComment] = useState(comment);
-  const [newTitle, setNewTitle] = useState(title);
-  const [userId, setUserId] = useState(uid);
-  const [sandwichId, setSandwichId] = useState(sid);
-  const [ratingId, setRatingId] = useState(rid);
+const ReviewModal = ({ open, setOpen, isNew, onSubmit, rating, sid, uid }) => {
+  const [title, setTitle] = useState(rating.title ?? '');
+  const [stars, setStars] = useState(rating.rating ?? 0);
+  const [comment, setComment] = useState(rating.comment ?? '');
 
   const action = isNew ? 'Create' : 'Edit';
 
   useEffect(() => {
-    setStars(rating);
-    setNewComment(comment);
-    setNewTitle(title);
-    setUserId(uid);
-    setSandwichId(sid);
-    setRatingId(rid);
-  }, [sid, rid, uid, rating, comment, title]);
+    setStars(rating.rating ?? 0);
+    setComment(rating.comment ?? '');
+    setTitle(rating.title ?? '');
+  }, [rating]);
 
   const handleClose = () => {
     setOpen(false);
@@ -38,16 +32,19 @@ const ReviewModal = ({ open, isNew, rating, setOpen, rid, uid, sid, comment, tit
   const handleSubmit = async () => {
     const review = {
       rating: stars,
-      comment: newComment,
-      title: newTitle,
-      user_id: userId,
-      sandwich_id: sandwichId,
+      comment: comment,
+      title: title,
+      user_id: sid,
+      sandwich_id: uid,
     };
     try {
       if (isNew) {
-        await createRating(review);
+        const newReview = await createRating(review);
+        console.log(newReview);
+        onSubmit(newReview);
       } else {
-        await updateRating(ratingId, review);
+        await updateRating(rating._id, review);
+        onSubmit({ ...rating, ...review });
       }
     } catch (e) {
       // nothing
@@ -88,9 +85,9 @@ const ReviewModal = ({ open, isNew, rating, setOpen, rid, uid, sid, comment, tit
           label='Review Title'
           rows={2}
           maxRows={2}
-          defaultValue={newTitle}
+          value={title}
           sx={{ width: '300px', marginBottom: '15px' }}
-          onChange={(e) => setNewTitle(e.target.value)}
+          onChange={(e) => setTitle(e.target.value)}
         />
 
         <TextField
@@ -99,9 +96,9 @@ const ReviewModal = ({ open, isNew, rating, setOpen, rid, uid, sid, comment, tit
           multiline
           rows={5}
           maxRows={5}
-          defaultValue={newComment}
+          value={comment}
           sx={{ width: '300px', marginBottom: '15px' }}
-          onChange={(e) => setNewComment(e.target.value)}
+          onChange={(e) => setComment(e.target.value)}
         />
 
       </Stack>
@@ -124,12 +121,10 @@ ReviewModal.propTypes = {
   open: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired,
   isNew: PropTypes.bool.isRequired,
-  rating: PropTypes.number.isRequired,
+  rating: PropTypes.object.isRequired,
   uid: PropTypes.string.isRequired,
-  rid: PropTypes.string,
   sid: PropTypes.string.isRequired,
-  comment: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func,
 };
 
 export default ReviewModal;
