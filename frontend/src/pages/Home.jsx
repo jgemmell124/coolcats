@@ -4,9 +4,10 @@ import { useSelector } from 'react-redux';
 import { getAllRatings } from '../apis/Ratings';
 import ReviewCarousel from '../components/ReviewCarousel';
 import FeaturedSandwiches from '../components/FeaturedSandwiches';
+import { selectUser } from '../auth/authSlice';
 
 const HomePage = () => {
-  const username = useSelector((state) => state.auth?.user?.username);
+  const username = useSelector(selectUser)?.username;
   const [sandwiches, setSandwiches] = useState([]);
   const [ratings, setRatings] = useState([]);
 
@@ -24,7 +25,10 @@ const HomePage = () => {
     <>
       <div className='container'>
         <h1>
-          Welcome back, <span style={{ color: '#A9333A' }}>{username}</span>.
+          {
+            username &&
+              <>Welcome back, <span style={{ color: '#A9333A' }}>{username}</span>. </>
+          }
           Here&apos;s what your friends have been eating!
         </h1>
         <p>
