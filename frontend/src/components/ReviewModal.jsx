@@ -34,13 +34,12 @@ const ReviewModal = ({ open, setOpen, isNew, onSubmit, rating, sid, uid }) => {
       rating: stars,
       comment: comment,
       title: title,
-      user_id: sid,
-      sandwich_id: uid,
+      user_id: uid,
+      sandwich_id: sid,
     };
     try {
       if (isNew) {
         const newReview = await createRating(review);
-        console.log(newReview);
         onSubmit(newReview);
       } else {
         await updateRating(rating._id, review);
