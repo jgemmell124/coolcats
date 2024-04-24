@@ -39,8 +39,8 @@ const HomePage = () => {
           Feel free to browse around and discover all the awesome things we have
           to offer.
         </p>{' '}
-        <FeaturedSandwiches sandwiches={sandwiches} />
         <ReviewCarousel ratings={ratings} />
+        <FeaturedSandwiches sandwiches={sandwiches} />
         <h2>Wollies Locations</h2>
         <iframe
           width='50%'

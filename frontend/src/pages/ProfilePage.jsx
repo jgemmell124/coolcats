@@ -213,13 +213,11 @@ const ProfilePage = () => {
       followers: followers.filter((id) => id !== ourId),
     })
       .then(() => {
-        setFollowingThisUser(false);
-
         // Update your profile so that you are no longer following them
         updateUser(ourId, {
           following: ourFollowing.filter((id) => id !== userToUnfollow._id),
         })
-          .then(() => {})
+          .then(setFollowingThisUser(false))
           .catch(() => {});
       })
       .catch((err) => {
@@ -300,7 +298,7 @@ const ProfilePage = () => {
           >
             {isOurProfile ? 'My Profile' : `${profileUser.username}'s Profile`}
           </Typography>
-          {!isOurProfile && (
+          {!isOurProfile && ourUsername && (
             <Button
               variant='outlined'
               size='small'
@@ -371,6 +369,7 @@ const ProfilePage = () => {
               setEditingField={setEditingUsername}
               isOurProfile={isOurProfile}
             />
+
             <EditableField
               userId={profileUser._id || ''}
               keyName='name'
@@ -381,16 +380,18 @@ const ProfilePage = () => {
               setEditingField={setEditingFullName}
               isOurProfile={isOurProfile}
             />
-            <EditableField
-              userId={profileUser._id || ''}
-              keyName='email'
-              field='Email'
-              fieldState={editedEmail || ''}
-              setFieldState={setEditedEmail}
-              editingField={editingEmail}
-              setEditingField={setEditingEmail}
-              isOurProfile={isOurProfile}
-            />
+            {(isOurProfile || isAdmin) && (
+              <EditableField
+                userId={profileUser._id || ''}
+                keyName='email'
+                field='Email'
+                fieldState={editedEmail || ''}
+                setFieldState={setEditedEmail}
+                editingField={editingEmail}
+                setEditingField={setEditingEmail}
+                isOurProfile={isOurProfile}
+              />
+            )}
             <Stack direction='column'>
               <Typography variant='h6' style={{ fontWeight: 'bold' }}>
                 Following:{' '}
@@ -442,9 +443,14 @@ const ProfilePage = () => {
             }}
           />
           {ratings.length === 0 && <h1>No Sandwich Reviews</h1>}
-          <Stack paddingTop={'5px'} spacing={2} alignItems={'center'} width={'100%'}>
+          <Stack
+            paddingTop={'5px'}
+            spacing={2}
+            alignItems={'center'}
+            width={'100%'}
+          >
             {ratings.map((rating) => (
-              <RatingCard 
+              <RatingCard
                 key={rating._id}
                 rating={rating}
                 handleEditClick={() => {
@@ -455,8 +461,7 @@ const ProfilePage = () => {
             ))}
           </Stack>
         </Grid>
-        {(isOurProfile || isAdmin) &&
-          openEditReviewModal &&
+        {(isOurProfile || isAdmin) && openEditReviewModal && (
           <ReviewModal
             open={openEditReviewModal}
             setOpen={setOpenEditReviewModal}
@@ -466,7 +471,7 @@ const ProfilePage = () => {
             sid={profileUser._id}
             uid={ourId}
           />
-        }
+        )}
         {showFollowersModal && (
           <FollowModal
             showModal={showFollowersModal}
