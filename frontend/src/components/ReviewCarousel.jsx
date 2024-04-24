@@ -54,7 +54,7 @@ const ReviewCarousel = () => {
             }
           })
           .sort((a, b) => {
-            new Date(b.lastEdited) - new Date(a.lastEdited);
+            return new Date(b.lastEdited) - new Date(a.lastEdited);
           })
           .splice(0, 5)
           .map((rating) => (

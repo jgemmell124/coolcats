@@ -36,8 +36,9 @@ const HomePage = () => {
           )}
         </h1>
         <p>
-          Feel free to browse around and discover all the awesome things we have
-          to offer.
+          Use our website to log, rate, and review sandwiches from
+          Wollaston&apos;s Deli at Northeastern University. Follow other users
+          to see their reviews, as well.
         </p>{' '}
         <ReviewCarousel ratings={ratings} />
         <FeaturedSandwiches sandwiches={sandwiches} />
