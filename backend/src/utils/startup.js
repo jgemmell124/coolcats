@@ -50,6 +50,15 @@ const populateDatabase = async () => {
       following: [],
       followers: [],
     },
+    {
+      username: 'sandwichlover',
+      email: 'fdfa33@ffdsafdsafsa.com',
+      password: 'password',
+      name: 'Bubble Bass',
+      role: ROLES_ENUM.USER,
+      following: [],
+      followers: [],
+    },
   ];
   const userIds = [];
   for (const user of users) {
@@ -91,6 +100,11 @@ const populateDatabase = async () => {
         'A classic PB&J sandwich with peanut butter, jelly, and bread',
     },
   ];
+
+  // this will prevent adding a bunch of repeat sandwiches
+  if (userIds.length === 0) {
+    return;
+  };
 
   const sandwichIds = [];
 

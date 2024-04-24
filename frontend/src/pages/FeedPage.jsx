@@ -73,12 +73,13 @@ const FeedPage = () => {
               } else {
                 const user = users.find((u) => u._id === item.user_id);
                 return (
-                  <div key={item._id} style={{ width: '100%' }}>
-                    <Typography>
-                      {user.username} rated a sandwich on {new Date(item.created).toLocaleString()}
-                    </Typography>
-                    <RatingCard key={item._id} rating={item} />
-                  </div>
+                  user &&
+                    <div key={item._id} style={{ width: '100%' }}>
+                      <Typography>
+                        {user?.username} rated a sandwich on {new Date(item.created).toLocaleString()}
+                      </Typography>
+                      <RatingCard key={item._id} rating={item} />
+                    </div>
                 );
               }
             })

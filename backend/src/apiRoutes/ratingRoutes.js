@@ -1,7 +1,7 @@
 import express from 'express';
 import { ROLES_ENUM  } from '../utils/constants.js';
 import * as sandwichDao from '../daos/sandwichDao.js';
-import * as userModel from '../models/userModel.js';
+import * as userDao from '../daos/userDao.js';
 import * as ratingDao from '../daos/ratingDao.js';
 import ratingModel from '../models/ratingModel.js';
 import { getUserSession } from '../utils/session.js';
@@ -45,13 +45,21 @@ router.post('/', async (req, res) => {
   // TODO should admin be able to create rating?
   const session = getUserSession(req);
 
-  const { sandwich_id, rating, comment } = req.body;
+  const { user_id, sandwich_id, rating, title, comment } = req.body;
   if (!session || session.role !== ROLES_ENUM.USER) {
     return res.status(403).send('Unauthorized');
   }
 
+  if (session?._id !== user_id) {
+    return res.status(403).send('Unauthorized');
+  }
+
+  if (!sandwich_id || !rating || !title || !comment) {
+    return res.status(400).send('Missing required fields');
+  }
+
   try {
-    const user = await userModel.findById(session._id);
+    const user = await userDao.getUserById(session._id);
     if (!user) {
       return res.status(404).send('User not found');
     }
@@ -64,13 +72,11 @@ router.post('/', async (req, res) => {
     return res.status(400).send('Failed to find user');
   }
 
-  if (!sandwich_id || !rating) {
-    return res.status(400).send('Missing required fields');
-  }
   const ratingObj = {
     sandwich_id,
     user_id: session._id,
     rating,
+    title,
     comment,
   };
 
