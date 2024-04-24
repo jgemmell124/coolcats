@@ -34,13 +34,6 @@ const SandwichPage = () => {
       .catch();
 
   }, []);
-  /**/
-  /* useEffect(() => { */
-  /*   if (selectedRating?._id) { */
-  /*     setOpenEditReviewModal(true); */
-  /*   } */
-  /* }, [selectedRating]); */
-  /**/
 
   if (!loaded) {
     return (
@@ -63,7 +56,6 @@ const SandwichPage = () => {
   }
 
   const onEditReview = (rating) => {
-    console.log('rating', rating);
     const index = ratings.findIndex((r) => r._id === rating._id);
     ratings[index] = rating;
     setRatings([...ratings]);
@@ -129,7 +121,7 @@ const SandwichPage = () => {
         setOpen={setOpenNewReviewModal}
         rating={{}}
         uid={user?._id ?? ''}
-        sid={sid ?? ''}
+        sandwiches={[sandwich]}
       />
       {
         selectedRating?._id &&
@@ -139,7 +131,7 @@ const SandwichPage = () => {
             onSubmit={onEditReview}
             setOpen={setOpenEditReviewModal}
             rating={selectedRating}
-            sid={selectedRating.sandwich_id ?? ''}
+            sandwiches={[sandwich]}
             uid={selectedRating.user_id ?? ''}
           />
       }

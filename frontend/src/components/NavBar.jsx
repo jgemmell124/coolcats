@@ -19,10 +19,15 @@ import { logout } from '../apis/Auth';
 import { logoutUser, selectAuth } from '../auth/authSlice';
 import { ROLES_ENUM } from '../utils/constants';
 import SearchIcon from '@mui/icons-material/Search';
+import ReviewModal from './ReviewModal';
+import { getAllSandwiches } from '../apis/Sandwiches';
 
 const ResponsiveNavBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [openNewReviewModal, setOpenNewReviewModal] = React.useState(false);
+  // TODO redux would come in handy here
+  const [sandwiches, setSandwiches] = React.useState([{}]);
   const { isAuthenticated, user } = useSelector(selectAuth);
   const username = user?.username;
   const userRole = user?.role;
@@ -54,6 +59,10 @@ const ResponsiveNavBar = () => {
     } catch (err) {
       /* setAlert('Failed to sign out'); */
     }
+  };
+
+  const fetchSandwiches = async () => {
+    await getAllSandwiches().then(s => setSandwiches(s.sandwiches));
   };
 
   const handleOpenNavMenu = (event) => {
@@ -145,7 +154,10 @@ const ResponsiveNavBar = () => {
   const logSandwichButtonMobile = (
     <Button
       variant='contained'
-      onClick={() => {}}
+      onClick={async () => {
+        await fetchSandwiches();
+        setOpenNewReviewModal(true);
+      }}
       sx={{
         marginTop: '5px',
         marginLeft: '5px',
@@ -295,7 +307,11 @@ const ResponsiveNavBar = () => {
             {isAuthenticated && (
               <Button
                 variant='contained'
-                onClick={handleCloseNavMenu}
+                /* onClick={handleCloseNavMenu} */
+                onClick={async () => {
+                  await fetchSandwiches();
+                  setOpenNewReviewModal(true);
+                }}
                 sx={{
                   my: 2,
                   display: 'block',
@@ -313,6 +329,14 @@ const ResponsiveNavBar = () => {
           {/* profile button */}
           {profileButton}
         </Toolbar>
+        <ReviewModal
+          isNew={true}
+          open={openNewReviewModal}
+          setOpen={setOpenNewReviewModal}
+          rating={{}}
+          uid={user?._id ?? ''}
+          sandwiches={sandwiches}
+        />
       </Container>
     </AppBar>
   );

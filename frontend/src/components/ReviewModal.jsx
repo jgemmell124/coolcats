@@ -9,10 +9,15 @@ import {
   Dialog,
   Rating,
   Box,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from '@mui/material';
 import { createRating, updateRating } from '../apis/Ratings';
 
-const ReviewModal = ({ open, setOpen, isNew, onSubmit, rating, sid, uid }) => {
+const ReviewModal = ({ open, setOpen, isNew, onSubmit, rating, sandwiches, uid }) => {
+  const [sandwich, setSandwich] = useState(sandwiches[0]);
   const [title, setTitle] = useState(rating.title ?? '');
   const [stars, setStars] = useState(rating.rating ?? 0);
   const [comment, setComment] = useState(rating.comment ?? '');
@@ -35,7 +40,7 @@ const ReviewModal = ({ open, setOpen, isNew, onSubmit, rating, sid, uid }) => {
       comment: comment,
       title: title,
       user_id: uid,
-      sandwich_id: sid,
+      sandwich_id: sandwich._id,
     };
     try {
       if (isNew) {
@@ -59,6 +64,28 @@ const ReviewModal = ({ open, setOpen, isNew, onSubmit, rating, sid, uid }) => {
         sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
       >
         <DialogTitle><b>{action} Review</b></DialogTitle>
+
+        <FormControl>
+          <InputLabel id='select-sandwich-label'>Select Sandwich</InputLabel>
+          <Select
+            value={sandwich.name}
+            disabled={sandwiches.length === 1}
+            onChange={(e) => {
+              const selectedSandwich = sandwiches.find(
+                (sandwich) => sandwich.name === e.target.value,
+              );
+              setSandwich(selectedSandwich);
+            }}
+            label='Select Sandwich'
+            sx={{ width: '300px', marginBottom: '15px' }}
+          >
+            {sandwiches.map((sandwich) => (
+              <MenuItem key={sandwich._id} value={sandwich.name}>
+                {sandwich.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <Box
           sx={{
@@ -122,7 +149,7 @@ ReviewModal.propTypes = {
   isNew: PropTypes.bool.isRequired,
   rating: PropTypes.object.isRequired,
   uid: PropTypes.string.isRequired,
-  sid: PropTypes.string.isRequired,
+  sandwiches: PropTypes.array.isRequired,
   onSubmit: PropTypes.func,
 };
 
