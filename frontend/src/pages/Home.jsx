@@ -4,9 +4,10 @@ import { useSelector } from 'react-redux';
 import { getAllRatings } from '../apis/Ratings';
 import ReviewCarousel from '../components/ReviewCarousel';
 import FeaturedSandwiches from '../components/FeaturedSandwiches';
+import { selectUser } from '../auth/authSlice';
 
 const HomePage = () => {
-  const username = useSelector((state) => state.auth?.user?.username);
+  const username = useSelector(selectUser)?.username;
   const [sandwiches, setSandwiches] = useState([]);
   const [ratings, setRatings] = useState([]);
 
@@ -24,8 +25,15 @@ const HomePage = () => {
     <>
       <div className='container'>
         <h1>
-          Welcome back, <span style={{ color: '#A9333A' }}>{username}</span>.
-          Here&apos;s what your friends have been eating!
+          {username ? (
+            <>
+              Welcome back, <span style={{ color: '#A9333A' }}>{username}</span>
+              {'. '}
+              Here&apos;s what your friends have been eating!
+            </>
+          ) : (
+            <>Welcome, please sign in to access all Wolliesboxd features.</>
+          )}
         </h1>
         <p>
           Feel free to browse around and discover all the awesome things we have
@@ -45,7 +53,7 @@ const HomePage = () => {
           allowFullScreen
           src={
             'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ3V9Axxh644kRYpjOb4LAAPg&key=' +
-              process.env.REACT_APP_GOOGLE_API_KEY
+            process.env.REACT_APP_GOOGLE_API_KEY
           }
         ></iframe>
         <iframe
@@ -59,7 +67,7 @@ const HomePage = () => {
           allowFullScreen
           src={
             'https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ07NCiCF644kRokxOOSJwRuc&key=' +
-              process.env.REACT_APP_GOOGLE_API_KEY
+            process.env.REACT_APP_GOOGLE_API_KEY
           }
         ></iframe>
       </div>
