@@ -115,7 +115,7 @@ const FollowModal = ({
         ) : (
           <List sx={{ marginBottom: '20px' }}>
             {profilesToDisplay.map((profile) => {
-              const weFollowProfile = profile.followers.includes(ourId);
+              const weFollowProfile = (profile.followers ?? []).includes(ourId);
               const isOurProfile = profile._id === ourId;
               return (
                 <ListItem key={profile._id} alignItems='center'>
@@ -132,22 +132,24 @@ const FollowModal = ({
                     primary={profile.username}
                     secondary={profile.name}
                   />
-                  <Button
-                    disabled={isOurProfile}
-                    variant='contained'
-                    size='small'
-                    color={weFollowProfile ? 'error' : 'success'}
-                    sx={{ marginLeft: '40px' }}
-                    onClick={
-                      weFollowProfile
-                        ? unfollowUserFunc(profile)
-                        : followUserFunc(profile)
-                    }
-                  >
-                    {weFollowProfile
-                      ? `${isOurProfile ? 'Your Profile' : 'Unfollow'}`
-                      : `${isOurProfile ? 'Your Profile' : 'Follow'}`}
-                  </Button>
+                  {ourId && (
+                    <Button
+                      disabled={isOurProfile}
+                      variant='contained'
+                      size='small'
+                      color={weFollowProfile ? 'error' : 'success'}
+                      sx={{ marginLeft: '40px' }}
+                      onClick={
+                        weFollowProfile
+                          ? unfollowUserFunc(profile)
+                          : followUserFunc(profile)
+                      }
+                    >
+                      {weFollowProfile
+                        ? `${isOurProfile ? 'Your Profile' : 'Unfollow'}`
+                        : `${isOurProfile ? 'Your Profile' : 'Follow'}`}
+                    </Button>
+                  )}
                 </ListItem>
               );
             })}

@@ -173,15 +173,18 @@ router.get('/id/:uid', async (req, res) => {
       return res.json(userInfo).status(200);
     } else {
       // other users can only see username and _id
-      return res
-        .status(200)
-        .json({ username: userInfo.username, _id: userInfo._id, name: userInfo.name });
+      return res.status(200).json({
+        username: userInfo.username,
+        _id: userInfo._id,
+        name: userInfo.name,
+        followers: userInfo.followers,
+        following: userInfo.following,
+      });
     }
   } catch (err) {
     console.log(err);
     return res.status(400).send('Failed to get user');
   }
-
 });
 
 router.put('/:uid', async (req, res) => {
@@ -189,12 +192,18 @@ router.put('/:uid', async (req, res) => {
   // user can update their own account
   const { uid } = req.params;
   const { role, ...updateParams } = req.body;
+  const updateKeys = Object.keys(updateParams);
+  const updatingOnlyFollowersFollowing = !updateKeys.some(
+    (key) => key !== 'following' && key !== 'followers'
+  );
 
   const userSession = getUserSession(req);
 
   if (
     !userSession ||
-    (userSession._id !== uid && userSession.role !== ROLES_ENUM.ADMIN)
+    (userSession._id !== uid &&
+      userSession.role !== ROLES_ENUM.ADMIN &&
+      !updatingOnlyFollowersFollowing) // anyone can update a user if the only fields being updated are followers and/or following
   ) {
     return res.status(403).send('Unauthorized');
   }

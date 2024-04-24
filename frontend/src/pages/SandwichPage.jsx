@@ -1,4 +1,4 @@
-import React,{ useEffect, useState }  from 'react';
+import React, { useEffect, useState } from 'react';
 import { CircularProgress, Fab, Grid, Stack, Tooltip } from '@mui/material';
 import _ from 'lodash';
 import { useParams } from 'react-router-dom';
@@ -32,7 +32,6 @@ const SandwichPage = () => {
     getRatingsBySandwichId(sid)
       .then((data) => setRatings(data.ratings))
       .catch();
-
   }, []);
 
   if (!loaded) {
@@ -48,7 +47,8 @@ const SandwichPage = () => {
         <Grid item xs={4}>
           <CircularProgress />
         </Grid>
-      </Grid>);
+      </Grid>
+    );
   }
 
   if (_.isEmpty(sandwich)) {
@@ -65,8 +65,7 @@ const SandwichPage = () => {
     setRatings([...ratings, rating]);
   };
 
-  const onDeleteReview = (rating) => {
-  };
+  const onDeleteReview = (rating) => {};
 
   return (
     <>
@@ -76,43 +75,41 @@ const SandwichPage = () => {
         justifyItems={'center'}
         /* sx={{ minHeight: '100vh' }} */
       >
-        <SandwichCard 
+        <SandwichCard
           sandwich={sandwich}
-          numRatings={ratings.length} 
-          totalRating={ratings.reduce((acc, rating) => acc + rating.rating, 0) / ratings.length}
+          numRatings={ratings.length}
+          totalRating={
+            ratings.reduce((acc, rating) => acc + rating.rating, 0) /
+            ratings.length
+          }
           onAddReview={() => setOpenNewReviewModal(true)}
         />
-        <Grid 
-          width='80%'
-        >
+        <Grid width='80%'>
           <Stack spacing={2} alignItems={'center'} width={'100%'}>
-            {
-              ratings.map((r) => (
-                <RatingCard
-                  key={r._id}
-                  rating={r}
-                  handleEditClick={() => {
-                    setSelectedRating(r);
-                    setOpenEditReviewModal(true);
-                  }}
-                />
-              ))
-            }
+            {ratings.map((r) => (
+              <RatingCard
+                key={r._id}
+                rating={r}
+                handleEditClick={() => {
+                  setSelectedRating(r);
+                  setOpenEditReviewModal(true);
+                }}
+              />
+            ))}
           </Stack>
         </Grid>
-        {
-          isUser &&
-            <Tooltip title='Add a rating'>
-              <Fab
-                sx={{ position: 'fixed', bottom: 16, right: 16 }}
-                color='secondary'
-                aria-label='add'
-                onClick={() => setOpenNewReviewModal(true)}
-              >
-                <AddIcon />
-              </Fab>
-            </Tooltip>
-        }
+        {isUser && (
+          <Tooltip title='Add a rating'>
+            <Fab
+              sx={{ position: 'fixed', bottom: 16, right: 16 }}
+              color='success'
+              aria-label='add'
+              onClick={() => setOpenNewReviewModal(true)}
+            >
+              <AddIcon />
+            </Fab>
+          </Tooltip>
+        )}
       </Stack>
       <ReviewModal
         isNew={true}
@@ -123,18 +120,17 @@ const SandwichPage = () => {
         uid={user?._id ?? ''}
         sandwiches={[sandwich]}
       />
-      {
-        selectedRating?._id &&
-          <ReviewModal
-            isNew={false}
-            open={openEditReviewModal}
-            onSubmit={onEditReview}
-            setOpen={setOpenEditReviewModal}
-            rating={selectedRating}
-            sandwiches={[sandwich]}
-            uid={selectedRating.user_id ?? ''}
-          />
-      }
+      {selectedRating?._id && (
+        <ReviewModal
+          isNew={false}
+          open={openEditReviewModal}
+          onSubmit={onEditReview}
+          setOpen={setOpenEditReviewModal}
+          rating={selectedRating}
+          sandwiches={[sandwich]}
+          uid={selectedRating.user_id ?? ''}
+        />
+      )}
     </>
   );
 };

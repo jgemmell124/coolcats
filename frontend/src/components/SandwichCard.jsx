@@ -1,6 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Stack, Button, Card, CardHeader, CardActions, CardContent, CardMedia, Typography, Rating, Tooltip, Paper } from '@mui/material';
+import {
+  Stack,
+  Button,
+  Card,
+  CardHeader,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Typography,
+  Rating,
+  Tooltip,
+  Paper,
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { useSelector } from 'react-redux';
@@ -15,7 +27,7 @@ const SandwichCard = ({ sandwich, totalRating, numRatings, onAddReview }) => {
       max={5}
       style={{
         float: 'left',
-        marginTop: 'auto'
+        marginTop: 'auto',
       }}
       size='small'
       precision={0.25}
@@ -27,7 +39,6 @@ const SandwichCard = ({ sandwich, totalRating, numRatings, onAddReview }) => {
 
   return (
     <Paper>
-
       <Card sx={{ width: '100%', maxWidth: 800 }}>
         <CardMedia
           component={'img'}
@@ -40,23 +51,26 @@ const SandwichCard = ({ sandwich, totalRating, numRatings, onAddReview }) => {
           subheader={
             <Stack>
               <Typography variant='subtitle1'>
-                {totalRating ? ` ${totalRating.toFixed(2)} (${numRatings} ratings)` : 'No ratings yet'}
+                {totalRating
+                  ? ` ${totalRating.toFixed(2)} (${numRatings} ratings)`
+                  : 'No ratings yet'}
               </Typography>
               {starRating}
             </Stack>
           }
           action={
             // admin and user who wrote the review can edit their review
-            (isAdmin || isEmployee) &&
+            (isAdmin || isEmployee) && (
               <Tooltip title='Edit'>
-                <Button 
+                <Button
                   startIcon={<EditIcon />}
-                  variant='outlined' 
+                  variant='outlined'
                   aria-label='edit'
                 >
                   Edit
                 </Button>
               </Tooltip>
+            )
           }
         />
         <CardContent>
@@ -68,17 +82,16 @@ const SandwichCard = ({ sandwich, totalRating, numRatings, onAddReview }) => {
           </Typography>
         </CardContent>
         <CardActions>
-          {
-            user &&
-              <Button
-                startIcon={<AddIcon />}
-                onClick={onAddReview}
-                color='secondary'
-                variant='contained'
-              >
-                Add Review
-              </Button>
-          }
+          {user && (
+            <Button
+              startIcon={<AddIcon />}
+              onClick={onAddReview}
+              color='success'
+              variant='contained'
+            >
+              Add Review
+            </Button>
+          )}
         </CardActions>
       </Card>
     </Paper>
