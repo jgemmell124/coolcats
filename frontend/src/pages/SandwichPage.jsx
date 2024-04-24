@@ -19,7 +19,7 @@ const SandwichPage = () => {
   const [loaded, setLoaded] = useState(false);
   const [openNewReviewModal, setOpenNewReviewModal] = useState(false);
   const [openEditReviewModal, setOpenEditReviewModal] = useState(false);
-  const [rating, setRating] = useState({});
+  const [selectedRating, setSelectedRating] = useState({});
   const user = useSelector(selectUser);
   const { isUser } = useSelector(selectIsWhatRole());
 
@@ -34,12 +34,13 @@ const SandwichPage = () => {
       .catch();
 
   }, []);
-
-  useEffect(() => {
-    if (rating?._id) {
-      setOpenEditReviewModal(true);
-    }
-  }, [rating]);
+  /**/
+  /* useEffect(() => { */
+  /*   if (selectedRating?._id) { */
+  /*     setOpenEditReviewModal(true); */
+  /*   } */
+  /* }, [selectedRating]); */
+  /**/
 
   if (!loaded) {
     return (
@@ -61,9 +62,18 @@ const SandwichPage = () => {
     return <NotFound message={'Sandwich not found'} />;
   }
 
-  const handleSelectedRating = (rating) => {
-    setRating(rating);
-    setOpenEditReviewModal(true);
+  const onEditReview = (rating) => {
+    console.log('rating', rating);
+    const index = ratings.findIndex((r) => r._id === rating._id);
+    ratings[index] = rating;
+    setRatings([...ratings]);
+  };
+
+  const onAddReview = (rating) => {
+    setRatings([...ratings, rating]);
+  };
+
+  const onDeleteReview = (rating) => {
   };
 
   return (
@@ -85,12 +95,14 @@ const SandwichPage = () => {
         >
           <Stack spacing={2} alignItems={'center'} width={'100%'}>
             {
-              ratings && ratings.map((r) => (
+              ratings.map((r) => (
                 <RatingCard
                   key={r._id}
                   rating={r}
-                  setRating={setRating}
-                  handleEditClick={() => handleSelectedRating(r)}
+                  handleEditClick={() => {
+                    setSelectedRating(r);
+                    setOpenEditReviewModal(true);
+                  }}
                 />
               ))
             }
@@ -113,24 +125,24 @@ const SandwichPage = () => {
       <ReviewModal
         isNew={true}
         open={openNewReviewModal}
+        onSubmit={onAddReview}
         setOpen={setOpenNewReviewModal}
-        rating={0}
-        comment={''}
-        title={''}
+        rating={{}}
         uid={user?._id ?? ''}
         sid={sid ?? ''}
       />
-      <ReviewModal
-        isNew={false}
-        open={openEditReviewModal}
-        setOpen={setOpenEditReviewModal}
-        rating={rating.rating ?? 0}
-        comment={rating.comment ?? ''}
-        title={rating.title ?? ''}
-        uid={rating.user_id ?? ''}
-        sid={rating.sandwich_id ?? ''}
-        rid={rating._id ?? ''}
-      />
+      {
+        selectedRating?._id &&
+          <ReviewModal
+            isNew={false}
+            open={openEditReviewModal}
+            onSubmit={onEditReview}
+            setOpen={setOpenEditReviewModal}
+            rating={selectedRating}
+            sid={selectedRating.sandwich_id ?? ''}
+            uid={selectedRating.user_id ?? ''}
+          />
+      }
     </>
   );
 };
