@@ -62,7 +62,7 @@ const ResponsiveNavBar = () => {
   };
 
   const fetchSandwiches = async () => {
-    await getAllSandwiches().then(s => setSandwiches(s.sandwiches));
+    await getAllSandwiches().then((s) => setSandwiches(s.sandwiches));
   };
 
   const handleOpenNavMenu = (event) => {
@@ -155,6 +155,10 @@ const ResponsiveNavBar = () => {
     <Button
       variant='contained'
       onClick={async () => {
+        if (!isAuthenticated) {
+          navigate('/login');
+          return;
+        }
         await fetchSandwiches();
         setOpenNewReviewModal(true);
       }}
@@ -246,7 +250,7 @@ const ResponsiveNavBar = () => {
                   <Typography textAlign='center'>Search</Typography>
                 </NavLink>
               </MenuItem>
-              {isAuthenticated && logSandwichButtonMobile}
+              {logSandwichButtonMobile}
             </Menu>
           </Box>
           {/* Mobile screen logo */}
@@ -304,27 +308,28 @@ const ResponsiveNavBar = () => {
               </IconButton>
             </NavLink>
 
-            {isAuthenticated && (
-              <Button
-                variant='contained'
-                /* onClick={handleCloseNavMenu} */
-                onClick={async () => {
-                  await fetchSandwiches();
-                  setOpenNewReviewModal(true);
-                }}
-                sx={{
-                  my: 2,
-                  display: 'block',
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                  backgroundColor: '#52bf30',
-                  ':hover': { backgroundColor: '#42852d' },
-                }}
-              >
-                <AddIcon />
-                Log Sandwich
-              </Button>
-            )}
+            <Button
+              variant='contained'
+              onClick={async () => {
+                if (!isAuthenticated) {
+                  navigate('/login');
+                  return;
+                }
+                await fetchSandwiches();
+                setOpenNewReviewModal(true);
+              }}
+              sx={{
+                my: 2,
+                display: 'block',
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                backgroundColor: '#52bf30',
+                ':hover': { backgroundColor: '#42852d' },
+              }}
+            >
+              <AddIcon />
+              Log Sandwich
+            </Button>
           </Box>
           {/* profile button */}
           {profileButton}
