@@ -121,20 +121,11 @@ const LoginPage = () => {
                   <b>Login</b>
                 </Button>
 
-                {/* <button
-                  className='btn btn-primary btn-lg btn-block'
-                  type='submit'
-                  onClick={handleLogin}
-                  disabled={!username || !password}
-                >
-                  Login
-                </button> */}
-
                 <hr className='my-4' />
 
                 <p>
                   {'Need an account?'}{' '}
-                  <Link to={'/signup'}>Create one here</Link>
+                  <Link to={'/register'}>Create one here</Link>
                 </p>
               </div>
             </div>
