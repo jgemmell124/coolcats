@@ -105,7 +105,7 @@ router.put('/:id', async (req, res) => {
     const ratingRes = ratingObj.toObject();
 
     // only users can update their own ratings
-    if (!userSession || (userSession._id !== ratingRes.user_id && userSession.role !== ROLES_ENUM.ADMIN)) {
+    if (!userSession || (userSession._id !== ratingRes.user_id.toString() && userSession.role !== ROLES_ENUM.ADMIN)) {
       return res.status(403).send('Unauthorized');
     }
 
@@ -127,7 +127,8 @@ router.put('/:id', async (req, res) => {
       updateParams.title = title;
     }
 
-    const updatedRating = await ratingDao.updateRating(id, updateParams);
+    await ratingDao.updateRating(id, updateParams);
+    const updatedRating = await ratingDao.getRatingById(id);
     return res.json(updatedRating).status(201);
   } catch (err) {
     console.log(err);

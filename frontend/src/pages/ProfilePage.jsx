@@ -23,6 +23,7 @@ import { updateUser } from '../apis/Users';
 import { getUserByUsername } from '../apis/Users';
 import ReviewModal from '../components/ReviewModal';
 import { selectIsWhatRole } from '../auth/authSlice';
+import { getSandwich } from '../apis/Sandwiches';
 
 const EditableField = ({
   userId,
@@ -160,6 +161,7 @@ const ProfilePage = () => {
   const [showFollowingModal, setShowFollowingModal] = useState(false);
 
   const [selectedRating, setSelectedRating] = useState({});
+  const [selectedSandwich, setSelectedSandwich] = useState({});
   const [openEditReviewModal, setOpenEditReviewModal] = useState(false);
 
   const navigate = useNavigate();
@@ -453,8 +455,10 @@ const ProfilePage = () => {
               <RatingCard
                 key={rating._id}
                 rating={rating}
-                handleEditClick={() => {
+                handleEditClick={async () => {
                   setSelectedRating(rating);
+                  const s = await getSandwich(rating.sandwich_id);
+                  setSelectedSandwich(s);
                   setOpenEditReviewModal(true);
                 }}
               />
@@ -468,7 +472,7 @@ const ProfilePage = () => {
             isNew={false}
             onSubmit={onEditReview}
             rating={selectedRating}
-            sid={profileUser._id}
+            sandwiches={[selectedSandwich]}
             uid={ourId}
           />
         )}
