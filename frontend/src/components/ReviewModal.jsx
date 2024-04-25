@@ -44,11 +44,11 @@ const ReviewModal = ({ open, setOpen, isNew, onSubmit, rating, sandwiches, uid }
     };
     try {
       if (isNew) {
-        const newReview = await createRating(review);
-        onSubmit(newReview);
+        const newRating = await createRating(review);
+        await onSubmit(newRating);
       } else {
-        await updateRating(rating._id, review);
-        onSubmit({ ...rating, ...review });
+        const updatingRating = await updateRating(rating._id, review);
+        await onSubmit(updatingRating);
       }
     } catch (e) {
       // nothing
